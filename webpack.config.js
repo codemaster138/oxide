@@ -6,5 +6,6 @@ module.exports = {
     output: {
         path: path.resolve(__dirname),
         filename: 'index.js'
-    }
+    },
+    target: 'node'
 }

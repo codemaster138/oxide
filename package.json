@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/codemaster138/oxide#readme",
   "dependencies": {
+    "readline-sync": "^1.4.10",
     "webpack": "^4.44.1",
     "webpack-cli": "^3.3.12"
   }
