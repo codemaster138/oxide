@@ -11,6 +11,7 @@ export const LexerOptions = {
         'PLUS': /\+/,
         'MINUS': /\-/,
         'POW': /\*\*/,
+        'NPOW': /\/\//,
         'MUL': /\*/,
         'DIV': /\//,
         'LPAREN': /\(/,
