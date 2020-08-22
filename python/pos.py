@@ -5,7 +5,7 @@ class Position:
         self.fn = fn
         self.idx = idx
     
-    def advance(t=" "):
+    def advance(self, t=" "):
         for c in t:
             self.col += 1
             self.idx += 1
@@ -13,8 +13,8 @@ class Position:
                 self.col = 0
                 self.ln += 1
     
-    def copy():
+    def copy(self):
         return Position(self.fn, self.col, self.ln, self.idx)
     
-    def __repr__():
+    def __repr__(self):
         return f'column {self.col}, line {self.ln} in {self.fn}'
