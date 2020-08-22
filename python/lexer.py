@@ -44,5 +44,4 @@ class Lexer:
             else:
                 self.position.advance(match)
                 tokens.append(Token(tp, match))
-
         return [tokens, None]
