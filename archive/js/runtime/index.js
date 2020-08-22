@@ -2,7 +2,7 @@ import Lexer from '../lexer';
 import clog from './clog';
 import fs from 'fs';
 import readlineSync from 'readline-sync';
-
+import Parser from '../parser';
 
 export const LexerOptions = {
     toks: {
