@@ -13,12 +13,13 @@ lexems = {
 }
 
 class Lexer:
-    def __init__(self, fn:str, text:str, lexems:dict):
+    def __init__(self, fn:str, text:str, skip:str, lexems:dict) -> None:
         self.text = text
         self.selection = None
         self.position = Pos(fn)
         self.advance()
         self.lexems = lexems
+        self.skip = skip
 
     def advance(self, t=""):
         self.position.advance(t)
@@ -33,7 +34,7 @@ class Lexer:
         while self.selection != "":
             match = None
             tp = None
-            if self.selection[0] in "  \t":
+            if self.selection[0] in self.skip:
                 self.advance(self.selection[0])
                 continue
             for k, v in self.lexems.items():
@@ -50,4 +51,4 @@ class Lexer:
         return [tokens, None]
 
 def generate(fn, text):
-    return Lexer(fn, text, lexems).make_tokens()
+    return Lexer(fn, text, "  \t", lexems).make_tokens()
