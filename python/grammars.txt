@@ -4,16 +4,25 @@
 #                  [      group      ]
 #                   [  group  ]
 #                        | <- Union
-# expr      : term ((PLUS|MINUS) term)* <- “*” matches 0 or more of previous group
+# expr      : term ((PLUS|MINUS) term)* <- “*” matches 0 or more of preceding group or token
 # ^           ^      ^Token type ^
 # Name        reference          reference
 
 
 expr        : compexpr ((AND|OR) compexpr)*
-compexpr    : arithexpr ((EE|LT|GT|LTE|GTE) arithexpr)*
+
+compexpr    : NOT compexpr
+            : arithexpr ((EE|LT|GT|LTE|GTE) arithexpr)*
+
 arithexpr   : term  ((PLUS|MINUS) term)*
-term        : power  ((MUL|DIV) power)*
+
+term        : factor  ((MUL|DIV) factor)*
+
+factor      : (PLUS|MINUS) factor
+            : power
+
 power       : atom ((POW|NPOW) atom)*
+
 atom        : (INT|FLOAT)
             : (TRUE|FALSE)
             : LPAREN expr RPAREN

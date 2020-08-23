@@ -41,6 +41,21 @@ class BooleanNode(Node):
         return res.failure(AssignmentException(self.value_tok, 'Boolean', ctx))
 
 class BinOpNode(Node):
+    operations = {
+        'PLUS': '__add__',
+        'MINUS': '__sub__',
+        'MUL': '__mul__',
+        'DIV': '__div__',
+        'POW': '__pow__',
+        'NPOW': '__npow__',
+        'EE': '__eq__',
+        'LT': '__lt__',
+        'GT': '__gt__',
+        'LTE': '__lte__',
+        'GTE': '__gte__',
+        'NE': '__neq__'
+    }
+
     def __init__(self, left_node, op_tok, right_node):
         self.left_node = left_node
         self.op_tok = op_tok
@@ -57,24 +72,38 @@ class BinOpNode(Node):
         if res.error: return res
         right = res.register(self.right_node.visit(context))
         if res.error: return res
-        operations = {
-            "PLUS": '__add__',
-            'MINUS': '__sub__',
-            'MUL': '__mul__',
-            'DIV': '__div__',
-            'POW': '__pow__',
-            'NPOW': '__npow__',
-            'EE': '__eq__',
-            'LT': '__lt__',
-            'GT': '__gt__',
-            'LTE': '__lte__',
-            'GTE': '__gte__',
-            'NE': '__neq__'
-        }
-        op = operations.get(self.op_tok.type)
+        op = self.operations.get(self.op_tok.type)
         if not op:
-            return res.failure(OperationError(self.op_tok, type(left).__name__, 'No such operator', context))
+            return res.failure(OperationError(self.op_tok, type(left).__name__, 'Operator either does not exist or is invalid in this context', context))
         result = left.operation(op, right)
+        if result[1]:
+            return res.failure(OperationError(self.op_tok, type(left).__name__, result[1], context))
+        return res.success(result[0])
+
+class UnaryOpNode:
+    operations = {
+        'PLUS': '__add__',
+        'MINUS': '__sub__',
+        'NOT': '__not__'
+    }
+
+    def __init__(self, op_tok, right_node):
+        self.op_tok = op_tok
+        self.right_node = right_node
+        self.pos_start = op_tok.pos_start
+        self.pos_end = right_node.pos_end
+
+    def __repr__(self):
+        return f'({self.op_tok.value} {self.right_node})'
+
+    def visit(self, context):
+        res = RTResult()
+        right = res.register(self.right_node.visit(context))
+        if res.error: return res
+        op = self.operations.get(self.op_tok.type)
+        if not op:
+            return res.failure(OperationError(self.op_tok, type(left).__name__, 'Operator either does not exist or is invalid in this context', context))
+        result = right.operation(op)
         if result[1]:
             return res.failure(OperationError(self.op_tok, type(left).__name__, result[1], context))
         return res.success(result[0])

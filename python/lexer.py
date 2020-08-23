@@ -13,6 +13,7 @@ lexems = {
     'GTE': r">=",
     'LTE': r"<=",
     'NE': r'!=',
+    'NOT': r"!",
     'AND': r'&&',
     'OR': r'\|\|',
     # Numbers

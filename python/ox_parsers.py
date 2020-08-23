@@ -28,6 +28,11 @@ def expr(parser):
 
 def compexpr(parser):
     res = ParseResult()
+    # if parser.cur_token == 'NOT':
+    #     parser.advance()
+    #     node = res.register(compexpr(parser))
+    #     if res.error: return res
+    #     return res.success(node)
     node = res.register(bin_op(parser, ('EE', 'LT', 'GT', 'LTE', 'GTE', 'NE'), arithexpr))
     if res.error: return res
     return res.success(node)
@@ -40,7 +45,19 @@ def arithexpr(parser):
 
 def term(parser):
     res = ParseResult()
-    node = res.register(bin_op(parser, ('MUL', 'DIV'), power))
+    node = res.register(bin_op(parser, ('MUL', 'DIV'), factor))
+    if res.error: return res
+    return res.success(node)
+
+def factor(parser):
+    res = ParseResult()
+    if parser.cur_token.type in ('PLUS', 'MINUS'):
+        op_tok = parser.cur_token
+        parser.advance()
+        node = res.register(factor(parser))
+        if res.error: return res
+        return res.success(UnaryOpNode(op_tok, node))
+    node = res.register(power(parser))
     if res.error: return res
     return res.success(node)
 

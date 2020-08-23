@@ -37,8 +37,8 @@ class Number(Value):
     
     def set_functions(self):
         self.functions = {
-            '__add__': BuiltinFunction(lambda v: self.add(v)),
-            '__sub__': BuiltinFunction(lambda v: self.sub(v)),
+            '__add__': BuiltinFunction(lambda v=None: self.add(v)),
+            '__sub__': BuiltinFunction(lambda v=None: self.sub(v)),
             '__mul__': BuiltinFunction(lambda v: self.mul(v)),
             '__div__': BuiltinFunction(lambda v: self.div(v)),
             '__pow__': BuiltinFunction(lambda v: self.power(v)),
@@ -46,7 +46,9 @@ class Number(Value):
             '__eq__': BuiltinFunction(lambda v: self.iseq(v)),
             '__neq__': BuiltinFunction(lambda v: self.noteq(v)),
             '__lt__': BuiltinFunction(lambda v: self.less(v)),
-            '__gt__': BuiltinFunction(lambda v: self.greater(v))
+            '__gt__': BuiltinFunction(lambda v: self.greater(v)),
+            '__lte__': BuiltinFunction(lambda v: self.less_eq(v)),
+            '__gte__': BuiltinFunction(lambda v: self.greater_eq(v))
         }
 
     @staticmethod
@@ -59,19 +61,26 @@ class Number(Value):
 
     def operation(self, op, *args):
         if self.functions.get(op):
-            res = self.functions[op].execute(*args)
+            try:
+                res = self.functions[op].execute(*args)
+            except TypeError:
+                return [None, 'Missing position arguments. Maybe invalid Unary Operation?']
             if isinstance(res, str):
                 return [None, res]
             return res
         return [None, 'Invalid operation']
 
     def add(self, v):
+        if v == None:
+            return [self, None]
         val = self.compat(v)
         if val:
             return [type(self)(self.value + val),None]
         return 'Incompatible Type'
 
     def sub(self, v):
+        if v == None:
+            return [type(self)(0 - self.value), None]
         val = self.compat(v)
         if val:
             return [type(self)(self.value - val),None]
@@ -123,6 +132,18 @@ class Number(Value):
         val = self.compat(v)
         if val:
             return [Boolean("true" if self.value > val else "false"),None]
+        return 'Incompatible Type'
+
+    def less_eq(self, v):
+        val = self.compat(v)
+        if val:
+            return [Boolean("true" if self.value <= val else "false"),None]
+        return 'Incompatible Type'
+
+    def greater_eq(self, v):
+        val = self.compat(v)
+        if val:
+            return [Boolean("true" if self.value >= val else "false"),None]
         return 'Incompatible Type'
 
     def compat(self, v):
