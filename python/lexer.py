@@ -14,6 +14,8 @@ lexems = {
     'LTE': "<=",
     'NOT': "!",
     'NE': '!=',
+    'AND': '&&',
+    'OR': '||',
     # Numbers
     'FLOAT': r"[0-9]+\.[0-9]+",
     'INT': r"[0-9]+",
@@ -35,6 +37,10 @@ lexems = {
 def set_keywords(*args):
     kw = r"(?:" + "|".join(args) + r")"
     lexems['KEYWORD'] = kw
+
+set_keywords((
+    'if'
+))
 
 class Lexer:
     def __init__(self, fn:str, text:str, skip:str, lexems:dict) -> None:

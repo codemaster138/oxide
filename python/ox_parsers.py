@@ -22,6 +22,18 @@ def adjancentNodes(parser, end):
 
 def expr(parser):
     res = ParseResult()
+    node = res.register(bin_op(parser, ('AND', 'OR'), compexpr))
+    if res.error: return res
+    return res.success(node)
+
+def compexpr(parser):
+    res = ParseResult()
+    node = res.register(bin_op(parser, ('EE', 'LT', 'GT', 'LTE', 'GTE'), arithexpr))
+    if res.error: return res
+    return res.success(node)
+
+def arithexpr(parser):
+    res = ParseResult()
     node = res.register(bin_op(parser, ('PLUS', 'MINUS'), term))
     if res.error: return res
     return res.success(node)

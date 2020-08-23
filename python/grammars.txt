@@ -9,7 +9,9 @@
 # Name        reference          reference
 
 
-expr        : term  ((PLUS|MINUS) term)*
+expr        : compexpr ((AND|OR) compexpr)*
+compexpr    : arithexpr ((EE|LT|GT|LTE|GTE) arithexpr)*
+arithexpr   : term  ((PLUS|MINUS) term)*
 term        : power  ((MUL|DIV) power)*
 power       : atom ((POW|NPOW) atom)*
 atom        : (INT|FLOAT)
