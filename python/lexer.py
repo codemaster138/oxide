@@ -4,20 +4,37 @@ from pos import Position as Pos
 from token import Token
 
 lexems = {
+    # ;
     'SEMICOLON': r";",
+    # Comparison operators
+    'EE': "==",
+    'GT': ">",
+    'LT': "<",
+    'GTE': ">=",
+    'LTE': "<=",
+    'NOT': "!",
+    'NE': '!=',
+    # Numbers
     'FLOAT': r"[0-9]+\.[0-9]+",
     'INT': r"[0-9]+",
+    # Mathematical operators
     'PLUS': r"\+",
     'MINUS': r"\-",
     'POW': r"\*\*",
     'NPOW': r"\/\/",
     'MUL': r"\*",
     'DIV': r"\/",
+    # Precedence
     'LPAREN': r"\(",
     'RPAREN': r"\)",
+    # Booleans
     'FALSE': "false",
     'TRUE': "true"
 }
+
+def set_keywords(*args):
+    kw = r"(?:" + "|".join(args) + r")"
+    lexems['KEYWORD'] = kw
 
 class Lexer:
     def __init__(self, fn:str, text:str, skip:str, lexems:dict) -> None:
