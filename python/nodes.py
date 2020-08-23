@@ -47,7 +47,7 @@ class BinOpNode(Node):
         self.right_node = right_node
         self.pos_start = left_node.pos_start
         self.pos_end = right_node.pos_end
-    
+
     def __repr__(self):
         return f'({self.left_node} {self.op_tok.value} {self.right_node})'
     
@@ -58,12 +58,18 @@ class BinOpNode(Node):
         right = res.register(self.right_node.visit(context))
         if res.error: return res
         operations = {
-            "PLUS": 'add',
-            'MINUS': 'sub',
-            'MUL': 'mul',
-            'DIV': 'div',
-            'POW': 'pow',
-            'NPOW': 'npow'
+            "PLUS": '__add__',
+            'MINUS': '__sub__',
+            'MUL': '__mul__',
+            'DIV': '__div__',
+            'POW': '__pow__',
+            'NPOW': '__npow__',
+            'EE': '__eq__',
+            'LT': '__lt__',
+            'GT': '__gt__',
+            'LTE': '__lte__',
+            'GTE': '__gte__',
+            'NE': '__neq__'
         }
         op = operations.get(self.op_tok.type)
         if not op:

@@ -28,7 +28,7 @@ def expr(parser):
 
 def compexpr(parser):
     res = ParseResult()
-    node = res.register(bin_op(parser, ('EE', 'LT', 'GT', 'LTE', 'GTE'), arithexpr))
+    node = res.register(bin_op(parser, ('EE', 'LT', 'GT', 'LTE', 'GTE', 'NE'), arithexpr))
     if res.error: return res
     return res.success(node)
 

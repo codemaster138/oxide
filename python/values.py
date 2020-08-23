@@ -37,12 +37,16 @@ class Number(Value):
     
     def set_functions(self):
         self.functions = {
-            'add': BuiltinFunction(lambda v: self.add(v)),
-            'sub': BuiltinFunction(lambda v: self.sub(v)),
-            'mul': BuiltinFunction(lambda v: self.mul(v)),
-            'div': BuiltinFunction(lambda v: self.div(v)),
-            'pow': BuiltinFunction(lambda v: self.power(v)),
-            'npow': BuiltinFunction(lambda v: self.neg_power(v))
+            '__add__': BuiltinFunction(lambda v: self.add(v)),
+            '__sub__': BuiltinFunction(lambda v: self.sub(v)),
+            '__mul__': BuiltinFunction(lambda v: self.mul(v)),
+            '__div__': BuiltinFunction(lambda v: self.div(v)),
+            '__pow__': BuiltinFunction(lambda v: self.power(v)),
+            '__npow__': BuiltinFunction(lambda v: self.neg_power(v)),
+            '__eq__': BuiltinFunction(lambda v: self.iseq(v)),
+            '__neq__': BuiltinFunction(lambda v: self.noteq(v)),
+            '__lt__': BuiltinFunction(lambda v: self.less(v)),
+            '__gt__': BuiltinFunction(lambda v: self.greater(v))
         }
 
     @staticmethod
@@ -97,6 +101,30 @@ class Number(Value):
             return [type(self)(self.value ** (-val)),None]
         return 'Incompatible Type'
     
+    def iseq(self, v):
+        val = self.compat(v)
+        if val:
+            return [Boolean("true" if self.value == val else "false"),None]
+        return 'Incompatible Type'
+
+    def noteq(self, v):
+        val = self.compat(v)
+        if val:
+            return [Boolean("true" if self.value != val else "false"),None]
+        return 'Incompatible Type'
+
+    def less(self, v):
+        val = self.compat(v)
+        if val:
+            return [Boolean("true" if self.value < val else "false"),None]
+        return 'Incompatible Type'
+
+    def greater(self, v):
+        val = self.compat(v)
+        if val:
+            return [Boolean("true" if self.value > val else "false"),None]
+        return 'Incompatible Type'
+
     def compat(self, v):
         if isinstance(v, (Number, Boolean)):
             return v.value
