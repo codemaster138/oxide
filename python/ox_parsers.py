@@ -45,6 +45,11 @@ def atom(parser):
         parser.advance()
         node = NumberNode(token)
         return res.success(node)
+    if parser.cur_token.type in ('TRUE', 'FALSE'):
+        token = parser.cur_token
+        parser.advance()
+        node = BooleanNode(token)
+        return res.success(node)
     if parser.cur_token == 'LPAREN':
         parser.advance()
         expr_ = res.register(expr(parser))

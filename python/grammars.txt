@@ -13,4 +13,5 @@ expr        : term  ((PLUS|MINUS) term)*
 term        : power  ((MUL|DIV) power)*
 power       : atom ((POW|NPOW) atom)*
 atom        : (INT|FLOAT)
+            : (TRUE|FALSE)
             : LPAREN expr RPAREN

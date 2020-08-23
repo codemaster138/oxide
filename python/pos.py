@@ -1,5 +1,6 @@
 class Position:
-    def __init__(self, fn, col=0, ln=0, idx=0):
+    def __init__(self, fn, txt="", col=0, ln=0, idx=0):
+        self.txt = txt
         self.col = col
         self.ln = ln
         self.fn = fn
@@ -14,7 +15,7 @@ class Position:
                 self.ln += 1
     
     def copy(self):
-        return Position(self.fn, self.col, self.ln, self.idx)
+        return Position(self.fn, self.txt, self.col, self.ln, self.idx)
     
     def __repr__(self):
         return f'column {self.col}, line {self.ln} in {self.fn}'

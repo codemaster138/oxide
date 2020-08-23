@@ -1,7 +1,11 @@
+from string_pointer import string_with_arrows
+
 class Error:
-    def __init__(self, _type, details):
+    def __init__(self, _type, details, pos_start=None, pos_end=None):
         self.type = _type
         self.details = details
+        self.pos_start = pos_start
+        self.pos_end = pos_end
     
     def __repr__(self):
         return f"Error: \x1b[31;1m{self.type}:\x1b[0m {self.details}"

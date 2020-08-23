@@ -24,6 +24,22 @@ class NumberNode(Node):
             return res.success(Number(v))
         return res.failure(AssignmentException(self.value_tok, 'Number', ctx))
 
+class BooleanNode(Node):
+    def __init__(self, value_tok):
+        self.value_tok = value_tok
+        self.pos_start = value_tok.pos_start
+        self.pos_end = value_tok.pos_end
+    
+    def __repr__(self):
+        return str(self.value_tok.value)
+    
+    def visit(self, ctx):
+        res = RTResult()
+        v = Boolean.before(self.value_tok.value)
+        if v:
+            return res.success(Boolean(v))
+        return res.failure(AssignmentException(self.value_tok, 'Boolean', ctx))
+
 class BinOpNode(Node):
     def __init__(self, left_node, op_tok, right_node):
         self.left_node = left_node

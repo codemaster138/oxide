@@ -33,6 +33,9 @@ class BuiltinFunction(FunctionValue):
 class Number(Value):
     def __init__(self, value):
         self.value = float(value)
+        self.set_functions()
+    
+    def set_functions(self):
         self.functions = {
             'add': BuiltinFunction(lambda v: self.add(v)),
             'sub': BuiltinFunction(lambda v: self.sub(v)),
@@ -104,12 +107,21 @@ class Number(Value):
 
 class Boolean(Number):
     def __init__(self, value):
-        self.value = 0 if value in ("0", "false") else 1
+        self.value = 0 if value in (0, "0", "false") else 1
+        self.set_functions()
     
-    def compat(self, value):
+    def compat(self, v):
         if isinstance(v, (Number, Boolean)):
             return v.value
         return False
     
+    @staticmethod
+    def before(value):
+        try:
+            float(value)
+            return float(value)
+        except:
+            return value if value in ('true', 'false') else False
+    
     def __repr__(self):
-        return 'true' if value else 'false'
+        return 'true' if self.value else 'false'

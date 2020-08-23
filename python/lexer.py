@@ -14,14 +14,16 @@ lexems = {
     'MUL': r"\*",
     'DIV': r"\/",
     'LPAREN': r"\(",
-    'RPAREN': r"\)"
+    'RPAREN': r"\)",
+    'FALSE': "false",
+    'TRUE': "true"
 }
 
 class Lexer:
     def __init__(self, fn:str, text:str, skip:str, lexems:dict) -> None:
         self.text = text
         self.selection = None
-        self.position = Pos(fn)
+        self.position = Pos(fn, text)
         self.advance()
         self.lexems = lexems
         self.skip = skip
