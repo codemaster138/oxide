@@ -43,3 +43,7 @@ class ox_Exception(Error): # Base class for runtime exceptions
 class AssignmentException(ox_Exception):
     def __init__(self, token, _type, ctx):
         super().__init__('AssignmentException', f'Value {token.value} is not compatible with type {_type}', token.pos_start, token.pos_end, ctx)
+
+class OperationError(ox_Exception):
+    def __init__(self, token, _type, message, ctx):
+        super().__init__('OperationError', f'Failed to apply operator {token.value} to {_type}: {message}', token.pos_start, token.pos_end, ctx)

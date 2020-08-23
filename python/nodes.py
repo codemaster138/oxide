@@ -1,7 +1,7 @@
 from utils import Node
 from interpreter import RTResult
 from values import *
-from errors import AssignmentException
+from errors import AssignmentException, OperationError
 
 ################################
 #             NODES            #
@@ -34,3 +34,25 @@ class BinOpNode(Node):
     
     def __repr__(self):
         return f'({self.left_node} {self.op_tok.value} {self.right_node})'
+    
+    def visit(self, context):
+        res = RTResult()
+        left = res.register(self.left_node.visit(context))
+        if res.error: return res
+        right = res.register(self.right_node.visit(context))
+        if res.error: return res
+        operations = {
+            "PLUS": 'add',
+            'MINUS': 'sub',
+            'MUL': 'mul',
+            'DIV': 'div',
+            'POW': 'pow',
+            'NPOW': 'pow'
+        }
+        op = operations.get(self.op_tok.type)
+        if not op:
+            return res.failure(OperationError(self.op_tok, type(left).__name__, 'No such operator', context))
+        result = left.operation(op, right)
+        if result[1]:
+            return res.failure(OperationError(self.op_tok, type(left).__name__, result[1], context))
+        return res.success(result[0])

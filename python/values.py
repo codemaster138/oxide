@@ -17,6 +17,12 @@ class FunctionValue(Value, metaclass=ABCMeta):
     def execute(self, *args):
         pass
 
+    def before(self, value):
+        pass
+
+    def operation(self, op, *args):
+        pass
+
 class BuiltinFunction(FunctionValue):
     def __init__(self, code):
         self.code = code
@@ -36,7 +42,7 @@ class Number(Value):
         }
 
     @staticmethod
-    def before(self, value):
+    def before(value):
         try:
             float(value)
             return float(value)
@@ -45,7 +51,7 @@ class Number(Value):
 
     def operation(self, op, *args):
         if self.functions.get(op):
-            res = self.functions[op](*args)
+            res = self.functions[op].execute(*args)
             if isinstance(res, str):
                 return [None, res]
             return res
@@ -85,6 +91,9 @@ class Number(Value):
         if isinstance(v, (Number, Boolean)):
             return v.value
         return False
+    
+    def __repr__(self):
+        return str(self.value)
 
 class Boolean(Number):
     def __init__(self, value):
@@ -94,3 +103,6 @@ class Boolean(Number):
         if isinstance(v, (Number, Boolean)):
             return v.value
         return False
+    
+    def __repr__(self):
+        return 'true' if value else 'false'
