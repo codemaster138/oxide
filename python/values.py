@@ -35,6 +35,7 @@ class Number(Value):
             'pow': BuiltinFunction(lambda v: self.power(v))
         }
 
+    @staticmethod
     def before(self, value):
         try:
             float(value)

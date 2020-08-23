@@ -43,7 +43,7 @@ def atom(parser):
     if parser.cur_token.type in ('INT', 'FLOAT'):
         token = parser.cur_token
         parser.advance()
-        node = PrimitiveNode(token)
+        node = NumberNode(token)
         return res.success(node)
     if parser.cur_token == 'LPAREN':
         parser.advance()

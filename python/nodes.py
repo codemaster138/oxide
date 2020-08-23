@@ -1,11 +1,14 @@
 from utils import Node
+from interpreter import RTResult
+from values import *
+from errors import AssignmentException
 
 ################################
 #             NODES            #
 ################################
 # This file defines all nodes created by the parser
 
-class PrimitiveNode(Node):
+class NumberNode(Node):
     def __init__(self, value_tok):
         self.value_tok = value_tok
         self.pos_start = value_tok.pos_start
@@ -13,6 +16,13 @@ class PrimitiveNode(Node):
     
     def __repr__(self):
         return str(self.value_tok.value)
+    
+    def visit(self, context):
+        res = RTResult()
+        v = Number.before(self.value_tok.value)
+        if v:
+            return res.success(Number(v))
+        return res.failure(AssignmentException(self.value_tok, 'Number', ctx))
 
 class BinOpNode(Node):
     def __init__(self, left_node, op_tok, right_node):
