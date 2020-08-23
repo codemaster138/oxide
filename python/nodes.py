@@ -17,7 +17,7 @@ class NumberNode(Node):
     def __repr__(self):
         return str(self.value_tok.value)
     
-    def visit(self, context):
+    def visit(self, ctx):
         res = RTResult()
         v = Number.before(self.value_tok.value)
         if v:

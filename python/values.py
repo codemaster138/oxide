@@ -56,7 +56,7 @@ class Number(Value):
     def before(value):
         try:
             float(value)
-            return float(value)
+            return float(value) or "0"
         except:
             return False
 
@@ -148,7 +148,7 @@ class Number(Value):
         return 'Incompatible Type'
     
     def _not_(self):
-        return Boolean("true" if self.value == 0 else "false")
+        return [Boolean("true" if self.value == 0 else "false"), None]
 
     def compat(self, v):
         if isinstance(v, (Number, Boolean)):

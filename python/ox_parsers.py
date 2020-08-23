@@ -28,11 +28,12 @@ def expr(parser):
 
 def compexpr(parser):
     res = ParseResult()
-    # if parser.cur_token == 'NOT':
-    #     parser.advance()
-    #     node = res.register(compexpr(parser))
-    #     if res.error: return res
-    #     return res.success(node)
+    if parser.cur_token == 'NOT':
+        op_tok = parser.cur_token
+        parser.advance()
+        node = res.register(compexpr(parser))
+        if res.error: return res
+        return res.success(UnaryOpNode(op_tok, node))
     node = res.register(bin_op(parser, ('EE', 'LT', 'GT', 'LTE', 'GTE', 'NE'), arithexpr))
     if res.error: return res
     return res.success(node)
