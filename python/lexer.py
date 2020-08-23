@@ -4,6 +4,7 @@ from pos import Position as Pos
 from token import Token
 
 lexems = {
+    'SEMICOLON': r";",
     'FLOAT': r"[0-9]+\.[0-9]+",
     'INT': r"[0-9]+",
     'PLUS': r"\+",
@@ -11,7 +12,9 @@ lexems = {
     'POW': r"\*\*",
     'NPOW': r"\/\/",
     'MUL': r"\*",
-    'DIV': r"\/"
+    'DIV': r"\/",
+    'LPAREN': r"\(",
+    'RPAREN': r"\)"
 }
 
 class Lexer:

@@ -12,4 +12,8 @@ class InvalidCharError(Error):
 
 class InvalidTokenError(Error):
     def __init__(self, token):
-        super().__init__('InvalidTokenError', f'Unexpected {token.type} at {token.pos_start}')
+        super().__init__('InvalidTokenError', f'Unexpected {token.value} at {token.pos_start}')
+
+class ExpectedTokenError(Error):
+    def __init__(self, token, pos_start):
+        super().__init__('ExpectedTokenError', f'Expected {token} at {pos_start}')

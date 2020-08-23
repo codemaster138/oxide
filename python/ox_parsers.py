@@ -1,7 +1,7 @@
 from nodes import *
 from utils import NodeList
 from ox_parser import ParseResult
-from errors import InvalidTokenError
+from errors import InvalidTokenError, ExpectedTokenError
 
 def genAST(parser):
     res = ParseResult()
@@ -16,6 +16,8 @@ def adjancentNodes(parser, end):
         node = res.register(expr(parser))
         if res.error: return res
         nodes.append(node)
+        if parser.cur_token == 'SEMICOLON':
+            parser.advance()
     return res.success(nodes)
 
 def expr(parser):
@@ -43,6 +45,14 @@ def atom(parser):
         parser.advance()
         node = PrimitiveNode(token)
         return res.success(node)
+    if parser.cur_token == 'LPAREN':
+        parser.advance()
+        expr_ = res.register(expr(parser))
+        if res.error: return res
+        if not parser.cur_token == 'RPAREN':
+            return res.failure(ExpectedTokenError(')', parser.cur_token.pos_start))
+        parser.advance()
+        return res.success(expr_)
     return res.failure(InvalidTokenError(parser.cur_token))
 
 def bin_op(parser, ops, leftFn, rightFn=None):
