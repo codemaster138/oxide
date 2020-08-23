@@ -47,7 +47,7 @@ class BinOpNode(Node):
             'MUL': 'mul',
             'DIV': 'div',
             'POW': 'pow',
-            'NPOW': 'pow'
+            'NPOW': 'npow'
         }
         op = operations.get(self.op_tok.type)
         if not op:

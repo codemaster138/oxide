@@ -38,7 +38,8 @@ class Number(Value):
             'sub': BuiltinFunction(lambda v: self.sub(v)),
             'mul': BuiltinFunction(lambda v: self.mul(v)),
             'div': BuiltinFunction(lambda v: self.div(v)),
-            'pow': BuiltinFunction(lambda v: self.power(v))
+            'pow': BuiltinFunction(lambda v: self.power(v)),
+            'npow': BuiltinFunction(lambda v: self.neg_power(v))
         }
 
     @staticmethod
@@ -85,6 +86,12 @@ class Number(Value):
         val = self.compat(v)
         if val:
             return [type(self)(self.value ** val),None]
+        return 'Incompatible Type'
+    
+    def neg_power(self, v):
+        val = self.compat(v)
+        if val:
+            return [type(self)(self.value ** (-val)),None]
         return 'Incompatible Type'
     
     def compat(self, v):
