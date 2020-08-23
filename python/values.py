@@ -48,7 +48,8 @@ class Number(Value):
             '__lt__': BuiltinFunction(lambda v: self.less(v)),
             '__gt__': BuiltinFunction(lambda v: self.greater(v)),
             '__lte__': BuiltinFunction(lambda v: self.less_eq(v)),
-            '__gte__': BuiltinFunction(lambda v: self.greater_eq(v))
+            '__gte__': BuiltinFunction(lambda v: self.greater_eq(v)),
+            '__not__': BuiltinFunction(lambda: self._not_())
         }
 
     @staticmethod
@@ -145,6 +146,9 @@ class Number(Value):
         if val:
             return [Boolean("true" if self.value >= val else "false"),None]
         return 'Incompatible Type'
+    
+    def _not_(self):
+        return Boolean("true" if self.value == 0 else "false")
 
     def compat(self, v):
         if isinstance(v, (Number, Boolean)):
