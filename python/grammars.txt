@@ -1,0 +1,15 @@
+# This file contains yacc-like grammar definitions, but isn't actually used by the code
+# I only use it to better wrap my head around how the parser grammars work.
+# Syntax:
+#                  [      group      ]
+#                   [  group  ]
+#                        | <- Union
+# expr      : term ((PLUS|MINUS) term)* <- “*” matches 0 or more of previous group
+# ^           ^      ^Token type ^
+# Name        reference          reference
+
+
+expr        : term  ((PLUS|MINUS) term)*
+term        : power  ((MUL|DIV) power)*
+power       : atom ((POW|NPOW) atom)*
+atom        : (INT|FLOAT)

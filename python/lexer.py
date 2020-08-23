@@ -8,6 +8,8 @@ lexems = {
     'INT': r"[0-9]+",
     'PLUS': r"\+",
     'MINUS': r"\-",
+    'POW': r"\*\*",
+    'NPOW': r"\/\/",
     'MUL': r"\*",
     'DIV': r"\/"
 }
@@ -34,6 +36,7 @@ class Lexer:
         while self.selection != "":
             match = None
             tp = None
+            pos_start = self.position.copy()
             if self.selection[0] in self.skip:
                 self.advance(self.selection[0])
                 continue
@@ -47,7 +50,8 @@ class Lexer:
                 return [None, InvalidCharError(self.selection[0], self.position)]
             else:
                 self.advance(match)
-                tokens.append(Token(tp, match))
+                tokens.append(Token(tp, match, pos_start, self.position.copy()))
+        tokens.append(Token('EOF', 'EOF', self.position.copy(), self.position.copy()))
         return [tokens, None]
 
 def generate(fn, text):

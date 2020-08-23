@@ -9,3 +9,7 @@ class Error:
 class InvalidCharError(Error):
     def __init__(self, char, pos):
         super().__init__('InvalidCharError', f'Invalid character `{char}` at {pos}')
+
+class InvalidTokenError(Error):
+    def __init__(self, token):
+        super().__init__('InvalidTokenError', f'Unexpected {token.type} at {token.pos_start}')
