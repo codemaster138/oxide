@@ -7,15 +7,15 @@ lexems = {
     # ;
     'SEMICOLON': r";",
     # Comparison operators
-    'EE': "==",
-    'GT': ">",
-    'LT': "<",
-    'GTE': ">=",
-    'LTE': "<=",
-    'NOT': "!",
-    'NE': '!=',
-    'AND': '&&',
-    'OR': '||',
+    'EE': r"==",
+    'GT': r">",
+    'LT': r"<",
+    'GTE': r">=",
+    'LTE': r"<=",
+    'NOT': r"!",
+    'NE': r'!=',
+    'AND': r'&&',
+    'OR': r'\|\|',
     # Numbers
     'FLOAT': r"[0-9]+\.[0-9]+",
     'INT': r"[0-9]+",
@@ -30,8 +30,8 @@ lexems = {
     'LPAREN': r"\(",
     'RPAREN': r"\)",
     # Booleans
-    'FALSE': "false",
-    'TRUE': "true"
+    'FALSE': r"false",
+    'TRUE': r"true"
 }
 
 def set_keywords(*args):
