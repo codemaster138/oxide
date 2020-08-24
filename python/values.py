@@ -230,7 +230,9 @@ class Undefined(Value):
         self.set_functions()
     
     def set_functions(self):
-        self.functions = {}
+        self.functions = {
+            '__truey__': BuiltinFunction(lambda:("false", None))
+        }
     
     @staticmethod
     def before(v):
