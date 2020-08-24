@@ -114,7 +114,7 @@ class Number(Value):
     def mul(self, v):
         val = self.compat(v)
         if val != None:
-            cast = self.cast(v)
+            cast = self.getCastType(v)
             if isinstance(cast, str):
                 return [None, cast]
             return [cast(self.value * val),None]

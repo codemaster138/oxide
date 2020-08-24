@@ -171,7 +171,7 @@ class VarCreateNode(Node):
         self.name_tok = name_tok
         self.value_node = value_node
         self.pos_start = name_tok.pos_start
-        self.pos_end = name_tok.pos_end
+        self.pos_end = value_node.pos_end
     
     def __repr__(self):
         return f'var {self.name_tok.value} = {self.value_node}'
@@ -186,4 +186,40 @@ class VarCreateNode(Node):
         if error != None:
             return res.failure(VarCreateException(error, self.pos_start, self.pos_end, context))
         return res.success(value)
-        
+
+class VarAssignNode(Node):
+    def __init__(self, name_tok, value_node):
+        self.name_tok = name_tok
+        self.value_node = value_node
+        self.pos_start = name_tok.pos_start
+        self.pos_end = value_node.pos_end
+    
+    def __repr__(self):
+        return f'{self.name_tok.value} = {self.value_node}'
+    
+    def visit(self, context):
+        res = RTResult()
+        value = res.register(self.value_node.visit(context))
+        if res.error: return res
+        if context.symbol_table.get(self.name_tok.value) == None:
+            return res.failure(VarAssignmentException('Variable not delcared', self.pos_start, self.pos_end, context))
+        error = context.symbol_table.set(self.name_tok.value, value)
+        if error != None:
+            return res.failure(VarAssignmentException(error, self.pos_start, self.pos_end, context))
+        return res.success(value)
+
+class VarAccessNode(Node):
+    def __init__(self, name_tok):
+        self.name_tok = name_tok
+        self.pos_start = name_tok.pos_start
+        self.pos_end = name_tok.pos_end
+    
+    def __repr__(self):
+        return str(self.name_tok.value)
+    
+    def visit(self, ctx):
+        res = RTResult()
+        value = ctx.symbol_table.get(self.name_tok.value)
+        if value == None:
+            return res.success(Undefined())
+        return res.success(value)

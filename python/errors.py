@@ -55,3 +55,7 @@ class OperationError(ox_Exception):
 class VarCreateException(ox_Exception):
     def __init__(self, message, pstart, pend, ctx):
         super().__init__('VarCreationException', f'Failed to create variable: {message}', pstart, pend, ctx)
+
+class VarAssignmentException(ox_Exception):
+    def __init__(self, message, pstart, pend, ctx):
+        super().__init__('VarAssignmentException', f'Failed to assign variable: {message}', pstart, pend, ctx)

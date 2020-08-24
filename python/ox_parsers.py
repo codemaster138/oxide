@@ -90,6 +90,17 @@ def atom(parser):
         parser.advance()
         node = NumberNode(token)
         return res.success(node)
+    if parser.cur_token.type == 'IDENTIFIER':
+        name_tok = parser.cur_token
+        parser.advance()
+        if parser.cur_token.type == 'EQ':
+            parser.advance()
+            value_node = res.register(expr(parser))
+            if res.error: return res
+            node = VarAssignNode(name_tok, value_node)
+            return res.success(node)
+        node = VarAccessNode(name_tok)
+        return res.success(node)
     if parser.cur_token.type in ('TRUE', 'FALSE'):
         token = parser.cur_token
         parser.advance()
