@@ -1,4 +1,4 @@
-from utils import Node
+from utils import Node, NodeList
 from interpreter import RTResult
 from values import *
 from errors import *
@@ -123,7 +123,9 @@ def iterateNodes(nodeList, context):
     return res.success(array)
 
 class IfNode(Node):
-    def __init__(self, comp, body):
+    def __init__(self, comp, body, elseNodes):
+        if not elseNodes: elseNodes = NodeList()
+        self.elseNodes = elseNodes
         self.comp = comp
         self.body = body
         self.pos_start = comp.pos_start
@@ -141,6 +143,10 @@ class IfNode(Node):
             return res.failure(OperationError(Token('?', '?', self.comp.pos_start, self.comp.pos_end), type(run).__name__, result[1], context))
         if result[0] == "true":
             data = res.register(iterateNodes(self.body, context))
+            if res.error: return res
+            return res.success(data)
+        else:
+            data = res.register(iterateNodes(self.elseNodes, context))
             if res.error: return res
             return res.success(data)
         return res.success(Undefined())

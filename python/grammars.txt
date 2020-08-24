@@ -31,7 +31,8 @@ atom        : (INT|FLOAT|UNDEF)
             : ifexpr
             : listexpr
 
-ifexpr      : KEYWORD:if expr LCURL [expr*] RCURL
-            : KEYWORD:if expr expr
+ifexpr      : KEYWORD:if expr (block|expr) (KEYWORD:else (block|expr))?
+
+block       : (LCURL [expr*] RCURL)
 
 listexpr    : LBRACK expr (COMMA expr)* RBRACK

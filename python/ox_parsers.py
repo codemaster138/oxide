@@ -149,19 +149,47 @@ def if_expr(parser):
         return res.failure(ExpectedTokenError('if', parser.cur_token.pos_start))
     parser.advance()
     comp = res.register(expr(parser))
+    bodyNodes = None
     if res.error: return res
     if parser.cur_token == 'LCURL':
-        parser.advance()
-        bodyNodes = res.register(adjancentNodes(parser, 'RCURL'))
+        bodyNodes = res.register(block(parser))
         if res.error: return res
-        node = IfNode(comp, bodyNodes)
-        return res.success(node)
+        #node = IfNode(comp, bodyNodes)
+        #return res.success(node)
     else:
         body = res.register(expr(parser))
         if res.error: return res
         bodyNodes = NodeList(body)
-        node = IfNode(comp, bodyNodes)
+        #node = IfNode(comp, bodyNodes)
+        #return res.success(node)
+    elseNodes = None
+    if (parser.cur_token == 'KEYWORD' and parser.cur_token > "else"):
+        parser.advance()
+        if parser.cur_token == 'LCURL':
+            elseNodes = res.register(block(parser))
+            if res.error: return res
+            #node = IfNode(comp, bodyNodes)
+            #return res.success(node)
+        else:
+            elseNode = res.register(expr(parser))
+            if res.error: return res
+            elseNodes = NodeList(elseNode)
+            #node = IfNode(comp, bodyNodes)
+            #return res.success(node)
+    if elseNodes == None:
+        node = IfNode(comp, bodyNodes, NodeList())
         return res.success(node)
+    node = IfNode(comp, bodyNodes, elseNodes)
+    return res.success(node)
+
+def block(parser):
+    res = ParseResult()
+    if parser.cur_token.type != 'LCURL':
+        return ExpectedTokenError('{', parser.cur_toke.pos_start)
+    parser.advance()
+    bodyNodes = res.register(adjancentNodes(parser, 'RCURL'))
+    if res.error: return res
+    return res.success(bodyNodes)
 
 def list_expr(parser):
     res = ParseResult()
