@@ -59,12 +59,18 @@ class Number(Value):
             return float(value) or "0"
         except:
             return False
+    
+    def getCastType(self, value):
+        if type(value).__name__ in ("Number", "Boolean"):
+            return Number
+        return 'Invalid cast'
 
     def operation(self, op, *args):
         if self.functions.get(op):
             try:
                 res = self.functions[op].execute(*args)
-            except TypeError:
+            except TypeError as err:
+                print(err)
                 return [None, 'Missing position arguments. Maybe invalid Unary Operation?']
             if isinstance(res, str):
                 return [None, res]
@@ -75,75 +81,75 @@ class Number(Value):
         if v == None:
             return [self, None]
         val = self.compat(v)
-        if val:
-            return [type(self)(self.value + val),None]
+        if val != None:
+            return [self.getCastType(v)(self.value + val),None]
         return 'Incompatible Type'
 
     def sub(self, v):
         if v == None:
-            return [type(self)(0 - self.value), None]
+            return [self.getCastType(v)(0 - self.value), None]
         val = self.compat(v)
-        if val:
-            return [type(self)(self.value - val),None]
+        if val != None:
+            return [self.getCastType(v)(self.value - val),None]
         return 'Incompatible Type'
 
     def mul(self, v):
         val = self.compat(v)
-        if val:
-            return [type(self)(self.value * val),None]
+        if val != None:
+            return [self.getCastType(v)(self.value * val),None]
         return 'Incompatible Type'
 
     def div(self, v):
         val = self.compat(v)
-        if val:
-            return [type(self)(self.value / val),None]
+        if val != None:
+            return [self.getCastType(v)(self.value / val),None]
         return 'Incompatible Type'
 
     def power(self, v):
         val = self.compat(v)
-        if val:
-            return [type(self)(self.value ** val),None]
+        if val != None:
+            return [self.getCastType(v)(self.value ** val),None]
         return 'Incompatible Type'
     
     def neg_power(self, v):
         val = self.compat(v)
-        if val:
-            return [type(self)(self.value ** (-val)),None]
+        if val != None:
+            return [self.getCastType(v)(self.value ** (-val)),None]
         return 'Incompatible Type'
     
     def iseq(self, v):
         val = self.compat(v)
-        if val:
+        if val != None:
             return [Boolean("true" if self.value == val else "false"),None]
         return 'Incompatible Type'
 
     def noteq(self, v):
         val = self.compat(v)
-        if val:
+        if val != None:
             return [Boolean("true" if self.value != val else "false"),None]
         return 'Incompatible Type'
 
     def less(self, v):
         val = self.compat(v)
-        if val:
+        if val != None:
             return [Boolean("true" if self.value < val else "false"),None]
         return 'Incompatible Type'
 
     def greater(self, v):
         val = self.compat(v)
-        if val:
+        if val != None:
             return [Boolean("true" if self.value > val else "false"),None]
         return 'Incompatible Type'
 
     def less_eq(self, v):
         val = self.compat(v)
-        if val:
+        if val != None:
             return [Boolean("true" if self.value <= val else "false"),None]
         return 'Incompatible Type'
 
     def greater_eq(self, v):
         val = self.compat(v)
-        if val:
+        if val != None:
             return [Boolean("true" if self.value >= val else "false"),None]
         return 'Incompatible Type'
     
@@ -165,7 +171,7 @@ class Boolean(Number):
     
     def compat(self, v):
         if isinstance(v, (Number, Boolean)):
-            return v.value
+            return v.value or 0
         return False
     
     @staticmethod
