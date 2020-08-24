@@ -143,3 +143,25 @@ class IfNode(Node):
             data = res.register(iterateNodes(self.body, context))
             if res.error: return res
             return res.success(data)
+        return res.success(Undefined())
+
+class ArrayNode(Node):
+    def __init__(self, body=[]):
+        self.body = body
+        self.pos_start = 0
+        self.pos_end = 0
+        if len(body) > 0:
+            self.pos_start = body[0].pos_start
+            self.pos_end = body[0].pos_end
+    
+    def __repr__(self):
+        return f'{body}'
+    
+    def visit(self, context):
+        res = RTResult()
+        value = OXArray()
+        for v in self.body:
+            val = res.register(v.visit(context))
+            if res.error: return res
+            value.operation('push', val)
+        return res.success(value)

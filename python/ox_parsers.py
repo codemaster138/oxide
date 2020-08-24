@@ -94,6 +94,10 @@ def atom(parser):
             return res.failure(ExpectedTokenError(')', parser.cur_token.pos_start))
         parser.advance()
         return res.success(expr_)
+    if parser.cur_token == "LBRACK":
+        node = res.register(list_expr(parser))
+        if res.error: return res
+        return res.success(node)
     return res.failure(InvalidTokenError(parser.cur_token))
 
 def bin_op(parser, ops, leftFn, rightFn=None):
@@ -129,3 +133,34 @@ def if_expr(parser):
         bodyNodes = NodeList(body)
         node = IfNode(comp, bodyNodes)
         return res.success(node)
+
+def list_expr(parser):
+    res = ParseResult()
+    if not parser.cur_token == 'LBRACK':
+        return res.failure(ExpectedTokenError('[', parser.cur_token.pos_start))
+    parser.advance()
+    if parser.cur_token == 'RBRACK':
+        # Empty array
+        parser.advance()
+        node = ArrayNode()
+        return res.success(node)
+    first_node = res.register(expr(parser))
+    if res.error: return res
+    if parser.cur_token == 'RBRACK':
+        parser.advance()
+        node = ArrayNode([first_node])
+        return res.success(node)
+    if not parser.cur_token == 'COMMA':
+        return res.failure(ExpectedTokenError(',', parser.cur_token.pos_start))
+    contents = [first_node]
+    while parser.cur_token == 'COMMA':
+        parser.advance()
+        content_node = res.register(expr(parser))
+        if res.error: return res
+        contents.append(content_node)
+    if parser.cur_token == 'RBRACK':
+        parser.advance()
+        node = ArrayNode(contents)
+        return res.success(node)
+    else:
+        return res.failure(ExpectedTokenError(']', parser.cur_token.pos_start))

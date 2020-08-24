@@ -3,6 +3,7 @@ from ox_parser import Parser
 from ox_parsers import genAST
 from interpreter import Context
 from utils import NodeList
+import os
 
 def shell_tree(ast, ctx):
     if isinstance(ast, NodeList):
@@ -18,6 +19,9 @@ def shell():
         text = input('oxide> ')
         if text == '.exit':
             break
+        if text == '.clear':
+            os.system('cls' if os.name == 'nt' else 'clear')
+            continue
         tokens = generate('<stdin>', text)
         if tokens[1]:
             print(tokens[1])

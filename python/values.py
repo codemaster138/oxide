@@ -113,6 +113,8 @@ class Number(Value):
 
     def div(self, v):
         val = self.compat(v)
+        if val == 0:
+            return [None, 'Cannot divide by 0']
         if val != None:
             return [self.getCastType(v)(self.value / val),None]
         return 'Incompatible Type'
@@ -174,7 +176,7 @@ class Number(Value):
         return False
     
     def __repr__(self):
-        return str(self.value)
+        return f'\x1b[33m{self.value}\x1b[0m'
 
 class Boolean(Number):
     def __init__(self, value):
@@ -195,11 +197,13 @@ class Boolean(Number):
             return value if value in ('true', 'false') else False
     
     def __repr__(self):
-        return 'true' if self.value else 'false'
+        return '\x1b[32mtrue\x1b[0m' if self.value else '\x1b[31;2mfalse\x1b[0m'
 
 class OXArray(Value):
-    def __init__(self):
+    def __init__(self, body=[]):
         self.list = []
+        for v in body:
+            self.list.append(v)
         self.set_functions()
     
     def set_functions(self):
@@ -220,3 +224,20 @@ class OXArray(Value):
     
     def __repr__(self):
         return f'{self.list}'
+
+class Undefined(Value):
+    def __init__(self):
+        self.set_functions()
+    
+    def set_functions(self):
+        self.functions = {}
+    
+    @staticmethod
+    def before(v):
+        return True
+    
+    def compat(self, v):
+        return False
+    
+    def __repr__(self):
+        return f'\x1b[2mundefined\x1b[0m'

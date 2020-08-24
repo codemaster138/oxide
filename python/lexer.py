@@ -4,8 +4,9 @@ from pos import Position as Pos
 from token import Token
 
 lexems = {
-    # ;
+    # Separators
     'SEMICOLON': r";",
+    'COMMA': r",",
     # Comparison operators
     'EE': r"==",
     'GT': r">",
@@ -31,6 +32,8 @@ lexems = {
     'RPAREN': r"\)",
     'LCURL': r"{",
     'RCURL': r"}",
+    'LBRACK': r"\[",
+    'RBRACK': r"]",
     # Booleans
     'FALSE': r"false",
     'TRUE': r"true"
