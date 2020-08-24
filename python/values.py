@@ -108,7 +108,7 @@ class Number(Value):
             cast = self.getCastType(v)
             if isinstance(cast, str):
                 return [None, cast]
-            return [self.cast(v)(self.value - val),None]
+            return [cast(self.value - val),None]
         return 'Incompatible Type'
 
     def mul(self, v):
@@ -117,7 +117,7 @@ class Number(Value):
             cast = self.cast(v)
             if isinstance(cast, str):
                 return [None, cast]
-            return [self.cast(v)(self.value * val),None]
+            return [cast(self.value * val),None]
         return 'Incompatible Type'
 
     def div(self, v):
@@ -128,7 +128,7 @@ class Number(Value):
             cast = self.getCastType(v)
             if isinstance(cast, str):
                 return [None, cast]
-            return [self.cast(v)(self.value / val),None]
+            return [cast(self.value / val),None]
         return 'Incompatible Type'
 
     def power(self, v):
@@ -137,7 +137,7 @@ class Number(Value):
             cast = self.getCastType(v)
             if isinstance(cast, str):
                 return [None, cast]
-            return [self.cast(v)(self.value ** val),None]
+            return [cast(self.value ** val),None]
         return 'Incompatible Type'
     
     def neg_power(self, v):
@@ -146,7 +146,7 @@ class Number(Value):
             cast = self.getCastType(v)
             if isinstance(cast, str):
                 return [None, cast]
-            return [self.cast(v)(self.value ** (-val)),None]
+            return [cast(self.value ** (-val)),None]
         return 'Incompatible Type'
     
     def iseq(self, v):
