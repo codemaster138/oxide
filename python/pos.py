@@ -18,4 +18,4 @@ class Position:
         return Position(self.fn, self.txt, self.col, self.ln, self.idx)
     
     def __repr__(self):
-        return f'column {self.col}, line {self.ln} in {self.fn}'
+        return f'column {self.col + 1}, line {self.ln + 1} in {self.fn}'
