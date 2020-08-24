@@ -80,6 +80,9 @@ def atom(parser):
         parser.advance()
         node = BooleanNode(token)
         return res.success(node)
+    if parser.cur_token == 'KEYWORD':
+        if parser.cur_token > "if":
+            print('found if')
     if parser.cur_token == 'LPAREN':
         parser.advance()
         expr_ = res.register(expr(parser))

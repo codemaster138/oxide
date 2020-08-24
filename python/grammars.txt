@@ -26,3 +26,7 @@ power       : atom ((POW|NPOW) atom)*
 atom        : (INT|FLOAT)
             : (TRUE|FALSE)
             : LPAREN expr RPAREN
+            : ifexpr
+
+ifexpr      : KEYWORD:if expr LCURL [expr*] RCURL
+            : KEYWORD:if expr expr
