@@ -3,10 +3,16 @@ from errors import InvalidCharError
 from pos import Position as Pos 
 from token import Token
 
+def set_keywords(*args):
+    keyword_re = r"(?:" + "|".join(args) + r")"
+    return keyword_re
+
 lexems = {
     # Separators
     'SEMICOLON': r";",
     'COMMA': r",",
+    # Assignment operators
+    'EQ': r"=",
     # Comparison operators
     'EE': r"==",
     'GT': r">",
@@ -36,16 +42,10 @@ lexems = {
     'RBRACK': r"]",
     # Booleans
     'FALSE': r"false",
-    'TRUE': r"true"
+    'TRUE': r"true",
+    'KEYWORD': set_keywords('if','var'),
+    'IDENTIFIER': r"\w+"
 }
-
-def set_keywords(*args):
-    kw = r"(?:" + "|".join(args) + r")"
-    lexems['KEYWORD'] = kw
-
-set_keywords((
-    'if'
-))
 
 class Lexer:
     def __init__(self, fn:str, text:str, skip:str, lexems:dict) -> None:

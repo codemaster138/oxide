@@ -51,3 +51,7 @@ class AssignmentException(ox_Exception):
 class OperationError(ox_Exception):
     def __init__(self, token, _type, message, ctx):
         super().__init__('OperationError', f'Failed to apply operator {token.value} to {_type}: {message}', token.pos_start, token.pos_end, ctx)
+
+class VarCreateException(ox_Exception):
+    def __init__(self, message, pstart, pend, ctx):
+        super().__init__('VarCreationException', f'Failed to create variable: {message}', pstart, pend, ctx)

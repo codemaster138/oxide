@@ -9,7 +9,8 @@
 # Name        reference          reference
 
 
-expr        : compexpr ((AND|OR) compexpr)*
+expr        : KEYWORD:var IDENTIFIER EQ expr
+            : compexpr ((AND|OR) compexpr)*
 
 compexpr    : NOT compexpr
             : arithexpr ((EE|LT|GT|LTE|GTE) arithexpr)*

@@ -23,6 +23,20 @@ def adjancentNodes(parser, end):
 
 def expr(parser):
     res = ParseResult()
+    if parser.cur_token == 'KEYWORD':
+        if parser.cur_token > 'var':
+            parser.advance()
+            if parser.cur_token != 'IDENTIFIER':
+                return res.failure(ExpectedTokenError('identifier', parser.cur_token.pos_start))
+            name_tok = parser.cur_token
+            parser.advance()
+            if parser.cur_token != 'EQ':
+                return res.failure(ExpectedTokenError('=', parser.cur_token.pos_start))
+            parser.advance()
+            value_node = res.register(expr(parser))
+            if res.error: return res
+            node = VarCreateNode(name_tok, value_node)
+            return res.success(node)
     node = res.register(bin_op(parser, ('AND', 'OR'), compexpr))
     if res.error: return res
     return res.success(node)

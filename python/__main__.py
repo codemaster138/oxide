@@ -3,6 +3,7 @@ from ox_parser import Parser
 from ox_parsers import genAST
 from interpreter import Context
 from utils import NodeList
+from symbol_table import SymbolTable
 import os
 
 def shell_tree(ast, ctx):
@@ -12,9 +13,12 @@ def shell_tree(ast, ctx):
         return
     value = ast.visit(ctx)
     if value.error: return print(value.error)
-    print(value.value)
+    print('<·', value.value)
 
 def shell():
+    base_context = Context('<stdin>')
+    base_symbol_table = SymbolTable()
+    base_context.symbol_table = base_symbol_table
     while True:
         text = input('oxide> ')
         if text == '.exit':
@@ -31,7 +35,6 @@ def shell():
         if ast.error:
             print(ast.error)
             continue
-        base_context = Context('<stdin>')
         shell_tree(ast.node, base_context)
 
 if __name__ == "__main__":

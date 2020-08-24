@@ -14,7 +14,7 @@ class Value(metaclass=ABCMeta):
                 res = self.functions[op].execute(*args)
             except TypeError as err:
                 print(err)
-                return [None, 'Missing position arguments. Maybe invalid Unary Operation?']
+                return [None, 'Missing positional arguments. Maybe invalid Unary Operation?']
             if isinstance(res, str):
                 return [None, res]
             return res
@@ -72,7 +72,7 @@ class Number(Value):
     def getCastType(self, value):
         if type(value).__name__ in ("Number", "Boolean"):
             return Number
-        return 'Invalid cast'
+        return f'Invalid cast ({type(value).__name__})'
 
     def operation(self, op, *args):
         if self.functions.get(op):
@@ -80,7 +80,7 @@ class Number(Value):
                 res = self.functions[op].execute(*args)
             except TypeError as err:
                 print(err)
-                return [None, 'Missing position arguments. Maybe invalid Unary Operation?']
+                return [None, 'Missing positional arguments. Maybe invalid Unary Operation?']
             if isinstance(res, str):
                 return [None, res]
             return res
@@ -94,21 +94,30 @@ class Number(Value):
             return [self, None]
         val = self.compat(v)
         if val != None:
-            return [self.getCastType(v)(self.value + val),None]
+            cast = self.getCastType(v)
+            if isinstance(cast, str):
+                return [None, cast]
+            return [cast(self.value + val),None]
         return 'Incompatible Type'
 
     def sub(self, v):
         if v == None:
-            return [self.getCastType(v)(0 - self.value), None]
+            return [Number(0 - self.value), None]
         val = self.compat(v)
         if val != None:
-            return [self.getCastType(v)(self.value - val),None]
+            cast = self.getCastType(v)
+            if isinstance(cast, str):
+                return [None, cast]
+            return [self.cast(v)(self.value - val),None]
         return 'Incompatible Type'
 
     def mul(self, v):
         val = self.compat(v)
         if val != None:
-            return [self.getCastType(v)(self.value * val),None]
+            cast = self.cast(v)
+            if isinstance(cast, str):
+                return [None, cast]
+            return [self.cast(v)(self.value * val),None]
         return 'Incompatible Type'
 
     def div(self, v):
@@ -116,19 +125,28 @@ class Number(Value):
         if val == 0:
             return [None, 'Cannot divide by 0']
         if val != None:
-            return [self.getCastType(v)(self.value / val),None]
+            cast = self.getCastType(v)
+            if isinstance(cast, str):
+                return [None, cast]
+            return [self.cast(v)(self.value / val),None]
         return 'Incompatible Type'
 
     def power(self, v):
         val = self.compat(v)
         if val != None:
-            return [self.getCastType(v)(self.value ** val),None]
+            cast = self.getCastType(v)
+            if isinstance(cast, str):
+                return [None, cast]
+            return [self.cast(v)(self.value ** val),None]
         return 'Incompatible Type'
     
     def neg_power(self, v):
         val = self.compat(v)
         if val != None:
-            return [self.getCastType(v)(self.value ** (-val)),None]
+            cast = self.getCastType(v)
+            if isinstance(cast, str):
+                return [None, cast]
+            return [self.cast(v)(self.value ** (-val)),None]
         return 'Incompatible Type'
     
     def iseq(self, v):
@@ -173,7 +191,7 @@ class Number(Value):
     def compat(self, v):
         if isinstance(v, (Number, Boolean)):
             return v.value
-        return False
+        return None
     
     def __repr__(self):
         return f'\x1b[33m{self.value}\x1b[0m'
@@ -199,7 +217,7 @@ class Boolean(Number):
     def __repr__(self):
         return '\x1b[32mtrue\x1b[0m' if self.value else '\x1b[31;2mfalse\x1b[0m'
 
-class OXArray(Value):
+class Array(Value):
     def __init__(self, body=[]):
         self.list = []
         for v in body:
@@ -216,7 +234,7 @@ class OXArray(Value):
         return True
     
     def compat(self, v):
-        return False
+        return None
     
     def push(self, v):
         self.list.append(v)

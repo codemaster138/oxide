@@ -1,7 +1,7 @@
 from utils import Node
 from interpreter import RTResult
 from values import *
-from errors import AssignmentException, OperationError
+from errors import *
 from token import Token
 
 ################################
@@ -103,10 +103,10 @@ class UnaryOpNode(Node):
         if res.error: return res
         op = self.operations.get(self.op_tok.type)
         if not op:
-            return res.failure(OperationError(self.op_tok, type(left).__name__, 'Operator either does not exist or is invalid in this context', context))
+            return res.failure(OperationError(self.op_tok, type(right).__name__, 'Operator either does not exist or is invalid in this context', context))
         result = right.operation(op)
         if result[1]:
-            return res.failure(OperationError(self.op_tok, type(left).__name__, result[1], context))
+            return res.failure(OperationError(self.op_tok, type(right).__name__, result[1], context))
         return res.success(result[0])
 
 def iterateNodes(nodeList, context):
@@ -115,7 +115,7 @@ def iterateNodes(nodeList, context):
         value = res.register(nodeList.visit(context))
         if res.error: return res
         return res.success(value)
-    array = OXArray()
+    array = Array()
     for node in nodeList:
         value = res.register(node.visit(context))
         if res.error: return res
@@ -159,9 +159,31 @@ class ArrayNode(Node):
     
     def visit(self, context):
         res = RTResult()
-        value = OXArray()
+        value = Array()
         for v in self.body:
             val = res.register(v.visit(context))
             if res.error: return res
             value.operation('push', val)
         return res.success(value)
+
+class VarCreateNode(Node):
+    def __init__(self, name_tok, value_node):
+        self.name_tok = name_tok
+        self.value_node = value_node
+        self.pos_start = name_tok.pos_start
+        self.pos_end = name_tok.pos_end
+    
+    def __repr__(self):
+        return f'var {self.name_tok.value} = {self.value_node}'
+    
+    def visit(self, context):
+        res = RTResult()
+        value = res.register(self.value_node.visit(context))
+        if res.error: return res
+        if context.symbol_table.get(self.name_tok.value) != None:
+            return res.failure(VarCreateException('Cannot re-declare variable\nRemove the `var` or `const` keyword to reassign', self.pos_start, self.pos_end, context))
+        error = context.symbol_table.set(self.name_tok.value, value)
+        if error != None:
+            return res.failure(VarCreateException(error, self.pos_start, self.pos_end, context))
+        return res.success(value)
+        
