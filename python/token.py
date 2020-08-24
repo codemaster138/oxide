@@ -13,6 +13,8 @@ class Token:
         return self.type == r.type
     
     def __gt__(self, r):
+        if isinstance(r, str):
+            return self.value == r
         if not isinstance(r, Token):
             return False
         return self.value == r.value

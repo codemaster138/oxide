@@ -18,6 +18,7 @@ def adjancentNodes(parser, end):
         nodes.append(node)
         if parser.cur_token == 'SEMICOLON':
             parser.advance()
+    parser.advance()
     return res.success(nodes)
 
 def expr(parser):
@@ -82,7 +83,9 @@ def atom(parser):
         return res.success(node)
     if parser.cur_token == 'KEYWORD':
         if parser.cur_token > "if":
-            print('found if')
+            node = res.register(if_expr(parser))
+            if res.error: return res
+            return res.success(node)
     if parser.cur_token == 'LPAREN':
         parser.advance()
         expr_ = res.register(expr(parser))
@@ -106,3 +109,23 @@ def bin_op(parser, ops, leftFn, rightFn=None):
         if res.error: return res
         left = BinOpNode(left, op_tok, right)
     return res.success(left)
+
+def if_expr(parser):
+    res = ParseResult()
+    if not (parser.cur_token == 'KEYWORD' and parser.cur_token > "if"):
+        return res.failure(ExpectedTokenError('if', parser.cur_token.pos_start))
+    parser.advance()
+    comp = res.register(expr(parser))
+    if res.error: return res
+    if parser.cur_token == 'LCURL':
+        parser.advance()
+        bodyNodes = res.register(adjancentNodes(parser, 'RCURL'))
+        if res.error: return res
+        node = IfNode(comp, bodyNodes)
+        return res.success(node)
+    else:
+        body = res.register(expr(parser))
+        if res.error: return res
+        bodyNodes = NodeList(body)
+        node = IfNode(comp, bodyNodes)
+        return res.success(node)

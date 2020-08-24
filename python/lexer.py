@@ -29,6 +29,8 @@ lexems = {
     # Precedence
     'LPAREN': r"\(",
     'RPAREN': r"\)",
+    'LCURL': r"{",
+    'RCURL': r"}",
     # Booleans
     'FALSE': r"false",
     'TRUE': r"true"

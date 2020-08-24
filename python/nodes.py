@@ -2,6 +2,7 @@ from utils import Node
 from interpreter import RTResult
 from values import *
 from errors import AssignmentException, OperationError
+from token import Token
 
 ################################
 #             NODES            #
@@ -80,7 +81,7 @@ class BinOpNode(Node):
             return res.failure(OperationError(self.op_tok, type(left).__name__, result[1], context))
         return res.success(result[0])
 
-class UnaryOpNode:
+class UnaryOpNode(Node):
     operations = {
         'PLUS': '__add__',
         'MINUS': '__sub__',
@@ -107,3 +108,38 @@ class UnaryOpNode:
         if result[1]:
             return res.failure(OperationError(self.op_tok, type(left).__name__, result[1], context))
         return res.success(result[0])
+
+def iterateNodes(nodeList, context):
+    res = RTResult()
+    if isinstance(nodeList, Node):
+        value = res.register(nodeList.visit(context))
+        if res.error: return res
+        return res.success(value)
+    array = OXArray()
+    for node in nodeList:
+        value = res.register(node.visit(context))
+        if res.error: return res
+        array.operation('push', value)
+    return res.success(array)
+
+class IfNode(Node):
+    def __init__(self, comp, body):
+        self.comp = comp
+        self.body = body
+        self.pos_start = comp.pos_start
+        self.pos_end = body[len(body) - 1].pos_end
+    
+    def __repr__(self):
+        return f'if ({self.comp}) {self.body}'
+
+    def visit(self, context):
+        res = RTResult()
+        run = res.register(self.comp.visit(context))
+        if res.error: return res
+        result = run.operation('__truey__')
+        if result[1]:
+            return res.failure(OperationError(Token('?', '?', self.comp.pos_start, self.comp.pos_end), type(run).__name__, result[1], context))
+        if result[0] == "true":
+            data = res.register(iterateNodes(self.body, context))
+            if res.error: return res
+            return res.success(data)

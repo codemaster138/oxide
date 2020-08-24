@@ -3,9 +3,11 @@ class Node:
         pass
 
 class NodeList:
-    def __init__(self):
+    def __init__(self, *args):
         self.nodeList = []
         self.nodeIdx = 0
+        for node in args:
+            self.append(node)
     
     def append(self, node):
         if issubclass(Node, type(node)):

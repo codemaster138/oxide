@@ -8,9 +8,17 @@ class Value(metaclass=ABCMeta):
     def before(self, value):
         pass
 
-    @abstractmethod
     def operation(self, op, *args):
-        pass
+        if self.functions.get(op):
+            try:
+                res = self.functions[op].execute(*args)
+            except TypeError as err:
+                print(err)
+                return [None, 'Missing position arguments. Maybe invalid Unary Operation?']
+            if isinstance(res, str):
+                return [None, res]
+            return res
+        return [None, 'Invalid operation']
 
 class FunctionValue(Value, metaclass=ABCMeta):
     @abstractmethod
@@ -49,7 +57,8 @@ class Number(Value):
             '__gt__': BuiltinFunction(lambda v: self.greater(v)),
             '__lte__': BuiltinFunction(lambda v: self.less_eq(v)),
             '__gte__': BuiltinFunction(lambda v: self.greater_eq(v)),
-            '__not__': BuiltinFunction(lambda: self._not_())
+            '__not__': BuiltinFunction(lambda: self._not_()),
+            '__truey__': BuiltinFunction(lambda: self.isTruey())
         }
 
     @staticmethod
@@ -76,6 +85,9 @@ class Number(Value):
                 return [None, res]
             return res
         return [None, 'Invalid operation']
+    
+    def isTruey(self):
+        return ["false", None] if self.value == 0 else ["true", None]
 
     def add(self, v):
         if v == None:
@@ -184,3 +196,27 @@ class Boolean(Number):
     
     def __repr__(self):
         return 'true' if self.value else 'false'
+
+class OXArray(Value):
+    def __init__(self):
+        self.list = []
+        self.set_functions()
+    
+    def set_functions(self):
+        self.functions = {
+            'push': BuiltinFunction(lambda v: self.push(v))
+        }
+    
+    @staticmethod
+    def before(v):
+        return True
+    
+    def compat(self, v):
+        return False
+    
+    def push(self, v):
+        self.list.append(v)
+        return v
+    
+    def __repr__(self):
+        return f'{self.list}'
