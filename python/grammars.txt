@@ -24,7 +24,7 @@ factor      : (PLUS|MINUS) factor
 
 power       : atom ((POW|NPOW) atom)*
 
-atom        : (INT|FLOAT)
+atom        : (INT|FLOAT|UNDEF)
             : IDENTIFIER (EQ expr)?
             : (TRUE|FALSE)
             : LPAREN expr RPAREN

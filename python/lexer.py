@@ -43,6 +43,8 @@ lexems = {
     # Booleans
     'FALSE': r"false",
     'TRUE': r"true",
+    # Misc
+    'UNDEF': r"undefined",
     'KEYWORD': set_keywords('if','var'),
     'IDENTIFIER': r"\w+"
 }

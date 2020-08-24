@@ -223,3 +223,14 @@ class VarAccessNode(Node):
         if value == None:
             return res.success(Undefined())
         return res.success(value)
+
+class UndefNode(Node):
+    def __init__(self,tok):
+        self.pos_start = tok.pos_start
+        self.pos_end = tok.pos_end
+    
+    def __repr__(self):
+        return Undefined().__repr__()
+    
+    def visit(self, ctx):
+        return RTResult().success(Undefined())

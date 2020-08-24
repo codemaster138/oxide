@@ -90,6 +90,10 @@ def atom(parser):
         parser.advance()
         node = NumberNode(token)
         return res.success(node)
+    if parser.cur_token.type == 'UNDEF':
+        node = UndefNode(parser.cur_token)
+        parser.advance()
+        return res.success(node)
     if parser.cur_token.type == 'IDENTIFIER':
         name_tok = parser.cur_token
         parser.advance()
