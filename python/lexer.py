@@ -11,8 +11,6 @@ lexems = {
     # Separators
     'SEMICOLON': r";",
     'COMMA': r",",
-    # Assignment operators
-    'EQ': r"=",
     # Comparison operators
     'EE': r"==",
     'GT': r">",
@@ -23,6 +21,8 @@ lexems = {
     'NOT': r"!",
     'AND': r'&&',
     'OR': r'\|\|',
+    # Assignment operators
+    'EQ': r"=",
     # Numbers
     'FLOAT': r"[0-9]+\.[0-9]+",
     'INT': r"[0-9]+",
