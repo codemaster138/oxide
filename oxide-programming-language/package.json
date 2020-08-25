@@ -1,0 +1,25 @@
+{
+    "name": "oxide-programming-language",
+    "displayName": "Oxide Programming Language",
+    "description": "Language support for the [oxide programming language](https://github.com/codemaster138/oxide)",
+    "version": "0.0.1",
+    "engines": {
+        "vscode": "^1.48.0"
+    },
+    "categories": [
+        "Programming Languages"
+    ],
+    "contributes": {
+        "languages": [{
+            "id": "oxide",
+            "aliases": ["Oxide", "oxide"],
+            "extensions": [".ox",".oxide"],
+            "configuration": "./language-configuration.json"
+        }],
+        "grammars": [{
+            "language": "oxide",
+            "scopeName": "source.oxide",
+            "path": "./syntaxes/oxide.tmLanguage.json"
+        }]
+    }
+}

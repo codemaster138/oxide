@@ -1,0 +1,55 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "Oxide",
+	"patterns": [
+		{
+			"include": "#keywords"
+		},
+		{
+			"include": "#strings"
+		}
+	],
+	"repository": {
+		"keywords": {
+			"patterns": [
+				{
+					"name": "keyword.control.oxide",
+					"match": "\\b(if|else|var)\\b"
+				},
+				{
+					"name": "constant.numeric.oxide",
+					"match": "\\b[0-9]+(?:\\.[0-9]+)?\\b"
+				},
+				{
+					"name": "keyword.operator.add.oxide",
+					"match": "\\+"
+				},
+				{
+					"name": "keyword.operator.sub.oxide",
+					"match": "\\-"
+				},
+				{
+					"name": "keyword.operator.mul.oxide",
+					"match": "\\*"
+				},
+				{
+					"name": "keyword.operator.div.oxide",
+					"match": "\\/"
+				},
+				{
+					"name": "keyword.operator.pow.oxide",
+					"match": "\\*\\*"
+				},
+				{
+					"name": "keyword.operator.npow.oxide",
+					"match": "\\/\\/"
+				}
+			]
+		}
+	},
+	"fileTypes": [
+		".oxide",
+		".ox"
+	],
+	"scopeName": "source.oxide"
+}
