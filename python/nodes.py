@@ -109,19 +109,6 @@ class UnaryOpNode(Node):
             return res.failure(OperationError(self.op_tok, type(right).__name__, result[1], context))
         return res.success(result[0])
 
-def iterateNodes(nodeList, context):
-    res = RTResult()
-    if isinstance(nodeList, Node):
-        value = res.register(nodeList.visit(context))
-        if res.error: return res
-        return res.success(value)
-    array = Array()
-    for node in nodeList:
-        value = res.register(node.visit(context))
-        if res.error: return res
-        array.operation('push', value)
-    return res.success(array)
-
 class IfNode(Node):
     def __init__(self, comp, body, elseNodes):
         if not elseNodes: elseNodes = NodeList()
@@ -231,7 +218,7 @@ class VarAccessNode(Node):
         return res.success(value)
 
 class UndefNode(Node):
-    def __init__(self,tok):
+    def __init__(self, tok):
         self.pos_start = tok.pos_start
         self.pos_end = tok.pos_end
     
@@ -240,3 +227,41 @@ class UndefNode(Node):
     
     def visit(self, ctx):
         return RTResult().success(Undefined())
+
+class FunctionNode(Node):
+    def __init__(self, arg_toks, body_nodes, pos_start, pos_end, name_tok):
+        self.arg_toks = arg_toks
+        self.body_nodes = body_nodes
+        self.pos_start = pos_start
+        self.pos_end = pos_end
+        self.name_tok = name_tok
+
+    def __repr__(self):
+        return f'func ({self.arg_toks}) {self.body_nodes}'
+    
+    def visit(self, ctx):
+        res = RTResult()
+        value = Function(self.arg_toks, self.body_nodes, ctx, self.pos_start, self.pos_end, self.name_tok.value)
+        ctx.symbol_table.set(self.name_tok.value, value)
+        return res.success(value)
+
+class CallNode(Node):
+    def __init__(self, name_tok, arg_nodes, pos_end):
+        self.pos_end = pos_end
+        self.name = name_tok.value
+        self.pos_start = name_tok.pos_start
+        self.arg_nodes = arg_nodes
+    
+    def __repr__(self):
+        return f'{self.name}({self.arg_nodes})'
+    
+    def visit(self, ctx):
+        res = RTResult()
+        function = ctx.symbol_table.get(self.name)
+        if function == None:
+            return res.failure(TypeException('Cannot call ' + Undefined().__repr__(), self.pos_start, self.pos_end, ctx))
+        if not isinstance(function, FunctionValue):
+            return res.failure(TypeException('Cannot call ' + type(function).__name__, self.pos_start, self.pos_end, ctx))
+        value = res.register(function.execute(self.arg_nodes))
+        if res.error: return res
+        return res.success(value)

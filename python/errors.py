@@ -59,3 +59,7 @@ class VarCreateException(ox_Exception):
 class VarAssignmentException(ox_Exception):
     def __init__(self, message, pstart, pend, ctx):
         super().__init__('VarAssignmentException', f'Failed to assign variable: {message}', pstart, pend, ctx)
+
+class TypeException(ox_Exception):
+    def __init__(self, message, pstart, pend, ctx):
+        super().__init__('TypeException', f'{message}', pstart, pend, ctx)

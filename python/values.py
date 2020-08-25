@@ -1,4 +1,20 @@
 from abc import ABCMeta, abstractmethod
+from interpreter import Context, RTResult
+from symbol_table import SymbolTable
+from utils import Node
+
+def iterateNodes(nodeList, context):
+    res = RTResult()
+    if isinstance(nodeList, Node):
+        value = res.register(nodeList.visit(context))
+        if res.error: return res
+        return res.success(value)
+    array = Array()
+    for node in nodeList:
+        value = res.register(node.visit(context))
+        if res.error: return res
+        array.operation('push', value)
+    return res.success(array)
 
 class Value(metaclass=ABCMeta):
     def __init__(self):
@@ -29,11 +45,41 @@ class FunctionValue(Value, metaclass=ABCMeta):
         pass
 
     def operation(self, op, *args):
-        pass
+        return [None, 'Invalid Operation']
+
+class Function(FunctionValue):
+    def __init__(self, arg_toks, body, ctx, pos_start, pos_end, name):
+        self.pos_start = pos_start
+        self.pos_end = pos_end
+        self.ctx = ctx
+        self.arg_names = [i.value for i in arg_toks]
+        self.body = body
+        self.name = name
+    
+    def __repr__(self):
+        return  f'<function {self.name}>'
+    
+    def execute(self, args):
+        res = RTResult()
+        funcContext = Context(self.name, self.ctx, self.pos_start)
+        symTable = SymbolTable(self.ctx.symbol_table)
+        funcContext.symbol_table = symTable
+        while len(args) < len(self.arg_names):
+            args.append(Undefined())
+        for i in range(len(self.arg_names)):
+            arg = res.register(args[i].visit(self.ctx))
+            if res.error: return res
+            funcContext.symbol_table.set(self.arg_names[i], arg)
+        data = res.register(iterateNodes(self.body, funcContext))
+        if res.error: return res
+        return res.success(data)
 
 class BuiltinFunction(FunctionValue):
     def __init__(self, code):
         self.code = code
+
+    def __repr__(self):
+        return f'<builtin function \'*\'>'
 
     def execute(self, *args):
         return self.code(*args)

@@ -20,7 +20,12 @@ def shell():
     base_symbol_table = SymbolTable()
     base_context.symbol_table = base_symbol_table
     while True:
-        text = input('oxide> ')
+        text = None
+        try:
+            text = input('oxide> ')
+        except KeyboardInterrupt:
+            print()
+            break
         if text == '.exit':
             break
         if text == '.clear':

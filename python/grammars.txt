@@ -26,13 +26,16 @@ power       : atom ((POW|NPOW) atom)*
 
 atom        : (INT|FLOAT|UNDEF)
             : IDENTIFIER (EQ expr)?
+            : call
             : (TRUE|FALSE)
             : LPAREN expr RPAREN
             : ifexpr
             : listexpr
             : funcdef
 
-funcdef     : KEYWORD:func IDENTIFIER LPAREN (IDENTIFIER (COMMA IDENTIFIER)*) RPAREN block
+call        : IDENTIFIER LPAREN (expr (COMMA expr)*)? RPAREN
+
+funcdef     : KEYWORD:func IDENTIFIER LPAREN (IDENTIFIER (COMMA IDENTIFIER)*)? RPAREN block
 
 ifexpr      : KEYWORD:if expr (block|expr) (KEYWORD:else (block|expr))?
 

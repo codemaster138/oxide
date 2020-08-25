@@ -103,6 +103,23 @@ def atom(parser):
             if res.error: return res
             node = VarAssignNode(name_tok, value_node)
             return res.success(node)
+        if parser.cur_token == 'LPAREN':
+            parser.advance()
+            args = []
+            if parser.cur_token != 'RPAREN':
+                arg = res.register(expr(parser))
+                if res.error: return res
+                args.append(arg)
+                while parser.cur_token == 'COMMA':
+                    parser.advance()
+                    arg = res.register(expr(parser))
+                    if res.error: return res
+                    args.append(arg)
+            if not parser.cur_token == 'RPAREN':
+                return res.failure(ExpectedTokenError('`)`', parser.cur_token.pos_start))
+            node = CallNode(name_tok, args, parser.cur_token.pos_end)
+            parser.advance()
+            return res.success(node)
         node = VarAccessNode(name_tok)
         return res.success(node)
     if parser.cur_token.type in ('TRUE', 'FALSE'):
@@ -189,7 +206,7 @@ def if_expr(parser):
 def block(parser):
     res = ParseResult()
     if parser.cur_token.type != 'LCURL':
-        return ExpectedTokenError('{', parser.cur_toke.pos_start)
+        return ExpectedTokenError('{', parser.cur_token.pos_start)
     parser.advance()
     bodyNodes = res.register(adjancentNodes(parser, 'RCURL'))
     if res.error: return res
@@ -238,7 +255,7 @@ def func_def(parser):
     parser.advance()
     arg_toks = []
     if parser.cur_token == 'RPAREN':
-        parser.advance()
+        pass
     else:
         if not parser.cur_token == 'IDENTIFIER': res.failure(ExpectedTokenError('identifier', parser.cur_token.pos_start))
         arg_toks.append(parser.cur_token)
@@ -248,8 +265,8 @@ def func_def(parser):
             if not parser.cur_token == 'IDENTIFIER': res.failure(ExpectedTokenError('identifier', parser.cur_token.pos_start))
             arg_toks.append(parser.cur_token)
             parser.advance()
-        if not parser.cur_token == 'RPAREN': return res.failure(ExpectedTokenError('`)`', parser.cur_token.pos_start))
-        parser.advance()
-        body = res.register(block(parser))
-        if res.error: return res
-        return res.success(FunctionNode(arg_toks, body, start, parser.cur_token.pos_start))
+    if not parser.cur_token == 'RPAREN': return res.failure(ExpectedTokenError('`)`', parser.cur_token.pos_start))
+    parser.advance()
+    body = res.register(block(parser))
+    if res.error: return res
+    return res.success(FunctionNode(arg_toks, body, start, parser.cur_token.pos_start, name_tok))
