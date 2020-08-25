@@ -30,6 +30,9 @@ atom        : (INT|FLOAT|UNDEF)
             : LPAREN expr RPAREN
             : ifexpr
             : listexpr
+            : funcdef
+
+funcdef     : KEYWORD:func IDENTIFIER LPAREN (IDENTIFIER (COMMA IDENTIFIER)*) RPAREN block
 
 ifexpr      : KEYWORD:if expr (block|expr) (KEYWORD:else (block|expr))?
 

@@ -115,6 +115,10 @@ def atom(parser):
             node = res.register(if_expr(parser))
             if res.error: return res
             return res.success(node)
+        if parser.cur_token > "func":
+            node = res.register(func_def(parser))
+            if res.error: return res
+            return res.success(node)
     if parser.cur_token == 'LPAREN':
         parser.advance()
         expr_ = res.register(expr(parser))
@@ -221,3 +225,31 @@ def list_expr(parser):
         return res.success(node)
     else:
         return res.failure(ExpectedTokenError(']', parser.cur_token.pos_start))
+
+def func_def(parser):
+    res = ParseResult()
+    if not parser.cur_token < 'KEYWORD:func': return res.failure(ExpectedTokenError('func', parser.cur_token.pos_start))
+    start = parser.cur_token.pos_start
+    parser.advance()
+    if not parser.cur_token == 'IDENTIFIER': return res.failure(ExpectedTokenError('identifier', parser.cur_token.pos_start))
+    name_tok = parser.cur_token
+    parser.advance()
+    if not parser.cur_token == 'LPAREN': return res.failure(ExpectedTokenError('`(`', parser.cur_token.pos_start))
+    parser.advance()
+    arg_toks = []
+    if parser.cur_token == 'RPAREN':
+        parser.advance()
+    else:
+        if not parser.cur_token == 'IDENTIFIER': res.failure(ExpectedTokenError('identifier', parser.cur_token.pos_start))
+        arg_toks.append(parser.cur_token)
+        parser.advance()
+        while parser.cur_token == 'COMMA':
+            parser.advance()
+            if not parser.cur_token == 'IDENTIFIER': res.failure(ExpectedTokenError('identifier', parser.cur_token.pos_start))
+            arg_toks.append(parser.cur_token)
+            parser.advance()
+        if not parser.cur_token == 'RPAREN': return res.failure(ExpectedTokenError('`)`', parser.cur_token.pos_start))
+        parser.advance()
+        body = res.register(block(parser))
+        if res.error: return res
+        return res.success(FunctionNode(arg_toks, body, start, parser.cur_token.pos_start))

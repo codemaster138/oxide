@@ -18,6 +18,11 @@ class Token:
         if not isinstance(r, Token):
             return False
         return self.value == r.value
+    
+    def __lt__(self, s):
+        if not isinstance(s, str):
+            return False
+        return f'{self.type}:{self.value}' == s
 
     def __repr__(self):
         return f'<{self.type}:{self.value}>'
