@@ -4,6 +4,7 @@ from ox_parsers import genAST
 from interpreter import Context
 from utils import NodeList
 from symbol_table import SymbolTable
+from ox_builtins import set_builtins
 import os
 import sys
 import os.path
@@ -21,6 +22,7 @@ def shell():
     base_context = Context('<stdin>')
     base_symbol_table = SymbolTable()
     base_context.symbol_table = base_symbol_table
+    set_builtins(base_context.symbol_table)
     while True:
         text = None
         try:
@@ -57,6 +59,7 @@ def runFile(fl):
     if not os.path.isfile(fl):
         print('Error: \x1b[31;1mFileError\x1b[0m: File not found')
     with open(fl) as file:
+        set_builtins(base_context.symbol_table)
         base_context = Context(fl)
         base_symbols = SymbolTable()
         base_context.symbol_table = base_symbols

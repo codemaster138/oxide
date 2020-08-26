@@ -267,6 +267,20 @@ class CallNode(Node):
             return res.failure(TypeException('Cannot call ' + Undefined().__repr__(), self.pos_start, self.pos_end, ctx))
         if not isinstance(function, FunctionValue):
             return res.failure(TypeException('Cannot call ' + type(function).__name__, self.pos_start, self.pos_end, ctx))
+        if isinstance(function, BuiltinFunction):
+            args = []
+            for node in self.arg_nodes:
+                val = res.register(node.visit(ctx))
+                if res.error: return res
+                args.append(val)
+            value = function.execute(*args)
+            if isinstance(value, RTResult):
+                value = res.register(value)
+                if res.error: return res
+                return res.success(value)
+            if value[1]:
+                return res.failure(TypeException(value[1], sel.pos_start, self.pos_end, ctx))
+            return res.success(value[0])
         value = res.register(function.execute(self.arg_nodes))
         if res.error: return res
         return res.success(value)
