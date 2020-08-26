@@ -13,13 +13,25 @@ def adjancentNodes(parser, end):
     res = ParseResult()
     nodes = NodeList()
     while not parser.cur_token == end or parser.cur_token == None:
-        node = res.register(expr(parser))
+        node = res.register(returnExpr(parser))
         if res.error: return res
         nodes.append(node)
         if parser.cur_token == 'SEMICOLON':
             parser.advance()
     parser.advance()
     return res.success(nodes)
+
+def returnExpr(parser):
+    res = ParseResult()
+    if parser.cur_token == 'RETURN':
+        pstart = parser.cur_token.pos_start
+        parser.advance()
+        expression = res.register(expr(parser))
+        if res.error: return res
+        return res.success(ReturnNode(expression, pstart, parser.cur_token.pos_start))
+    exp = res.register(expr(parser))
+    if res.error: return res
+    return res.success(exp)
 
 def expr(parser):
     res = ParseResult()
@@ -248,9 +260,10 @@ def func_def(parser):
     if not parser.cur_token < 'KEYWORD:func': return res.failure(ExpectedTokenError('func', parser.cur_token.pos_start))
     start = parser.cur_token.pos_start
     parser.advance()
-    if not parser.cur_token == 'IDENTIFIER': return res.failure(ExpectedTokenError('identifier', parser.cur_token.pos_start))
-    name_tok = parser.cur_token
-    parser.advance()
+    name_tok = None
+    if parser.cur_token == 'IDENTIFIER': 
+        name_tok = parser.cur_token
+        parser.advance()
     if not parser.cur_token == 'LPAREN': return res.failure(ExpectedTokenError('`(`', parser.cur_token.pos_start))
     parser.advance()
     arg_toks = []

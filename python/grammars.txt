@@ -8,6 +8,8 @@
 # ^           ^      ^Token type ^
 # Name        reference          reference
 
+returnExpr  : KEYWORD:return expr
+            : expr
 
 expr        : KEYWORD:var IDENTIFIER EQ expr
             : compexpr ((AND|OR) compexpr)*
@@ -35,7 +37,7 @@ atom        : (INT|FLOAT|UNDEF)
 
 call        : IDENTIFIER LPAREN (expr (COMMA expr)*)? RPAREN
 
-funcdef     : KEYWORD:func IDENTIFIER LPAREN (IDENTIFIER (COMMA IDENTIFIER)*)? RPAREN block
+funcdef     : KEYWORD:func IDENTIFIER? LPAREN (IDENTIFIER (COMMA IDENTIFIER)*)? RPAREN block
 
 ifexpr      : KEYWORD:if expr (block|expr) (KEYWORD:else (block|expr))?
 

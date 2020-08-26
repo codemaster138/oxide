@@ -43,6 +43,8 @@ lexems = {
     # Booleans
     'FALSE': r"false",
     'TRUE': r"true",
+    # return
+    'RETURN': r"return",
     # Misc
     'UNDEF': r"undefined",
     'KEYWORD': set_keywords('if', 'else', 'var', 'func'),

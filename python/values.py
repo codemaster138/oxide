@@ -9,12 +9,23 @@ def iterateNodes(nodeList, context):
         value = res.register(nodeList.visit(context))
         if res.error: return res
         return res.success(value)
-    array = Array()
-    for node in nodeList:
-        value = res.register(node.visit(context))
-        if res.error: return res
-        array.operation('push', value)
-    return res.success(array)
+    if not context.func:
+        array = Array()
+        for node in nodeList:
+            value = res.register(node.visit(context))
+            if res.error: return res
+            if res.returned:
+                res.returned = False
+                return res.failure(ReturnException('"return" outside of function', node.pos_start, context))
+            array.operation('push', value)
+        return res.success(array)
+    else:
+        for node in nodeList:
+            value = res.register(node.visit(context))
+            if res.error: return res
+            if res.returned:
+                return res.success(value)
+        return res.success(Undefined())
 
 class Value(metaclass=ABCMeta):
     def __init__(self):
@@ -64,6 +75,7 @@ class Function(FunctionValue):
         funcContext = Context(self.name, self.ctx, self.pos_start)
         symTable = SymbolTable(self.ctx.symbol_table)
         funcContext.symbol_table = symTable
+        funcContext.func = True
         while len(args) < len(self.arg_names):
             args.append(Undefined())
         for i in range(len(self.arg_names)):
@@ -72,7 +84,10 @@ class Function(FunctionValue):
             funcContext.symbol_table.set(self.arg_names[i], arg)
         data = res.register(iterateNodes(self.body, funcContext))
         if res.error: return res
-        return res.success(data)
+        if res.returned:
+            res.returned = False
+            return res.success(data)
+        return res.success(Undefined())
 
 class BuiltinFunction(FunctionValue):
     def __init__(self, code):

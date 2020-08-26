@@ -63,3 +63,7 @@ class VarAssignmentException(ox_Exception):
 class TypeException(ox_Exception):
     def __init__(self, message, pstart, pend, ctx):
         super().__init__('TypeException', f'{message}', pstart, pend, ctx)
+
+class ReturnException(ox_Exception):
+    def __init__(self, message, pos, tx):
+        super().__init__('ReturnError', message, pos, pos, ctx)

@@ -241,8 +241,13 @@ class FunctionNode(Node):
     
     def visit(self, ctx):
         res = RTResult()
-        value = Function(self.arg_toks, self.body_nodes, ctx, self.pos_start, self.pos_end, self.name_tok.value)
-        ctx.symbol_table.set(self.name_tok.value, value)
+        if self.name_tok != None:
+            name = self.name_tok.value
+            value = Function(self.arg_toks, self.body_nodes, ctx, self.pos_start, self.pos_end, name)
+            ctx.symbol_table.set(self.name_tok.value, value)
+        else:
+            name = '(anonymous)'
+            value = Function(self.arg_toks, self.body_nodes, ctx, self.pos_start, self.pos_end, name)
         return res.success(value)
 
 class CallNode(Node):
@@ -263,5 +268,20 @@ class CallNode(Node):
         if not isinstance(function, FunctionValue):
             return res.failure(TypeException('Cannot call ' + type(function).__name__, self.pos_start, self.pos_end, ctx))
         value = res.register(function.execute(self.arg_nodes))
+        if res.error: return res
+        return res.success(value)
+
+class ReturnNode(Node):
+    def __init__(self, node, start, end):
+        self.pos_start = start
+        self.pos_end = end
+        self.node = node
+    
+    def __repr__(self):
+        return f'return {self.node};'
+    
+    def visit(self, ctx):
+        res = RTResult(True)
+        value = res.register(self.node.visit(ctx))
         if res.error: return res
         return res.success(value)

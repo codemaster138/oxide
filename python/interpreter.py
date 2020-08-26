@@ -1,7 +1,8 @@
 class RTResult:
-    def __init__(self):
+    def __init__(self, returned=False):
         self.error = None
         self.value = None
+        self.returned = returned
     
     def failure(self, error):
         self.error = error
@@ -14,9 +15,10 @@ class RTResult:
     
     def register(self, res):
         #print(f"\x1b[32mpassed" + ('\x1b[31;1m' if res == None else ''), res, "\x1b[0m")
+        if res.returned: self.returned = res.returned
         if res.error:
             self.error = res.error
-            return self
+            return res.value
         return res.value
 
 #################################
@@ -29,3 +31,6 @@ class Context:
         self.parent = parent
         self.parent_entry_pos = parent_entry_pos
         self.symbol_table = None
+        self.func = False
+        if parent:
+            self.func = parent.func
