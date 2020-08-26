@@ -92,4 +92,4 @@ class Lexer:
         return [tokens, None]
 
 def generate(fn, text):
-    return Lexer(fn, text, "  \t", lexems).make_tokens()
+    return Lexer(fn, text, "  \n\t", lexems).make_tokens()
