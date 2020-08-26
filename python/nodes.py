@@ -195,7 +195,7 @@ class VarAssignNode(Node):
         value = res.register(self.value_node.visit(context))
         if res.error: return res
         if context.symbol_table.get(self.name_tok.value) == None:
-            return res.failure(VarAssignmentException('Variable not delcared', self.pos_start, self.pos_end, context))
+            return res.failure(VarAssignmentException('Variable not declared', self.pos_start, self.pos_end, context))
         error = context.symbol_table.set(self.name_tok.value, value)
         if error != None:
             return res.failure(VarAssignmentException(error, self.pos_start, self.pos_end, context))

@@ -17,7 +17,7 @@
 			"patterns": [
 				{
 					"name": "keyword.control.oxide",
-					"match": "\\b(if|else|var|func)\\b"
+					"match": "\\b(if|else|var|func|return)\\b"
 				}
 			]
 		},
