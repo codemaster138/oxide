@@ -59,10 +59,10 @@ def runFile(fl):
     if not os.path.isfile(fl):
         print('Error: \x1b[31;1mFileError\x1b[0m: File not found')
     with open(fl) as file:
-        set_builtins(base_context.symbol_table)
         base_context = Context(fl)
         base_symbols = SymbolTable()
         base_context.symbol_table = base_symbols
+        set_builtins(base_context.symbol_table)
         tokens = generate(fl, file.read())
         if tokens[1]:
             print(tokens[1])
