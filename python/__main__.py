@@ -49,10 +49,14 @@ def shell():
 def file_tree(ast , ctx):
     if isinstance(ast, NodeList):
         for node in ast:
-            file_tree(node, ctx)
+            val = file_tree(node, ctx)
+            if val:
+                return True
         return
     value = ast.visit(ctx)
-    if value.error: return print(value.error)
+    if value.error:
+        print(value.error)
+        return True
 
 
 def runFile(fl):

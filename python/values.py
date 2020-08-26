@@ -2,6 +2,8 @@ from abc import ABCMeta, abstractmethod
 from interpreter import Context, RTResult
 from symbol_table import SymbolTable
 from utils import Node
+from ast import literal_eval
+from shlex import quote
 
 def iterateNodes(nodeList, context):
     res = RTResult()
@@ -325,7 +327,7 @@ class Undefined(Value):
 
 class String(Value):
     def __init__(self, text):
-        self.value = text
+        self.value = literal_eval(quote(text))
         self.set_functions()
     
     def __repr__(self):

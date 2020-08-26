@@ -3,21 +3,34 @@
 	"name": "Oxide",
 	"patterns": [
 		{
-			"include": "#keywords"
-		},
-		{
-			"include": "#literals"
-		},
-		{
-			"include": "#operators"
+			"include": "#ox-expr"
 		}
 	],
 	"repository": {
+		"ox-expr": {
+			"patterns": [
+				{
+					"include": "#keywords"
+				},
+				{
+					"include": "#literals"
+				},
+				{
+					"include": "#operators"
+				},
+				{
+					"include": "#functions"
+				},
+				{
+					"include": "#strings"
+				}
+			]
+		},
 		"keywords": {
 			"patterns": [
 				{
 					"name": "keyword.control.oxide",
-					"match": "\\b(if|else|var|func|return)\\b"
+					"match": "\\b(if|else|var|return)\\b"
 				}
 			]
 		},
@@ -54,6 +67,54 @@
 				{
 					"name": "keyword.operator.npow.oxide",
 					"match": "\\/\\/"
+				}
+			]
+		},
+		"functions": {
+			"patterns": [
+				{
+					"match": "\\b(func)(?:\\s+(\\w+)\\s*\\((\\w+(?:(,) \\w+)*)?\\))?",
+					"captures": {
+						"1": {
+							"name": "keyword.control.oxide"
+						},
+						"2": {
+							"name": "entity.name.function.oxide"
+						},
+						"3": {
+							"name": "variable.parameter.oxide"
+						},
+						"4": {
+							"name": "entity.other.oxide"
+						}
+					},
+					"name": "meta.function.oxide"
+				},
+				{
+					"match": "\\b(\\w+)\\((.+)\\)",
+					"name": "meta.function.call.oxide",
+					"captures": {
+						"1": {
+							"name": "entity.name.function.oxide"
+						},
+						"2": {
+							"name": "meta.parameter.type.variable.oxide"
+						}
+					}
+				}
+			]
+		},
+		"strings": {
+			"patterns": [
+				{
+					"begin": "\"",
+					"end": "\"",
+					"name": "string.quoted.single.oxide"
+				},
+				{
+					"begin": "'",
+					"end": "'",
+					"name": "string.quoted.single.oxide"
 				}
 			]
 		}
