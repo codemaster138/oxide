@@ -102,6 +102,10 @@ def atom(parser):
         parser.advance()
         node = NumberNode(token)
         return res.success(node)
+    if parser.cur_token.type == 'STRING':
+        node = StringNode(parser.cur_token)
+        parser.advance()
+        return res.success(node)
     if parser.cur_token.type == 'UNDEF':
         node = UndefNode(parser.cur_token)
         parser.advance()

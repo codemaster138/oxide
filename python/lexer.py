@@ -45,6 +45,8 @@ lexems = {
     'TRUE': r"true",
     # return
     'RETURN': r"return",
+    # strings
+    'STRING': r"(?:\"[^\n\"]*\")|(?:'[^\n']*')",
     # Misc
     'UNDEF': r"undefined",
     'KEYWORD': set_keywords('if', 'else', 'var', 'func'),

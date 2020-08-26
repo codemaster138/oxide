@@ -299,3 +299,17 @@ class ReturnNode(Node):
         value = res.register(self.node.visit(ctx))
         if res.error: return res
         return res.success(value)
+
+class StringNode(Node):
+    def __init__(self, tok):
+        self.pos_start = tok.pos_start
+        self.pos_end = tok.pos_end
+        self.text = tok.value[1:-1]
+    
+    def __repr__(self):
+        return f"'{self.text}'"
+    
+    def visit(self, ctx):
+        res = RTResult()
+        val = String(self.text)
+        return res.success(val)

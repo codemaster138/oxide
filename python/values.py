@@ -322,3 +322,32 @@ class Undefined(Value):
     
     def __repr__(self):
         return f'\x1b[2mundefined\x1b[0m'
+
+class String(Value):
+    def __init__(self, text):
+        self.value = text
+        self.set_functions()
+    
+    def __repr__(self):
+        return f"{self.value}"
+    
+    def set_functions(self):
+        self.functions = {
+            '__truey__': BuiltinFunction(lambda: True),
+            '__add__': BuiltinFunction(lambda v: self.add(v))
+        }
+    
+    def compat(self, v):
+        if isinstance(v, (Number, String, Boolean)):
+            return str(v.value)
+        return None
+    
+    @staticmethod
+    def before(v):
+        return self.compat(v)
+
+    def add(self, v):
+        val = self.compat(v)
+        if val == None:
+            return 'Incompatible Type'
+        return String(self.value + val)
